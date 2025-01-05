@@ -1,0 +1,1279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kishore Chatbox</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #2f3b52, #1a202c);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            color: #fff;
+            overflow: hidden;
+        }
+
+        .chatbox {
+            background: #2c2f3d;
+            width: 400px;
+            height: 500px;
+            display: flex;
+            flex-direction: column;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            animation: fadeIn 1s ease-out;
+        }
+
+        .chatbox-header {
+            font-size: 30px;
+            color: #fff;
+            font-weight: bold;
+            text-align: center;
+            text-transform: uppercase;
+            background: linear-gradient(135deg, #ff7f50, #00bfff);
+            background-clip: text;
+            -webkit-background-clip: text;
+            animation: gradientAnimation 5s ease infinite;
+            text-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        .messages {
+            flex-grow: 1;
+            overflow-y: auto;
+            margin-bottom: 15px;
+            padding-right: 10px;
+        }
+
+        .message {
+            margin: 10px 0;
+            padding: 12px 15px;
+            border-radius: 8px;
+            max-width: 70%;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .message.user {
+            background-color: #4e8cff;
+            align-self: flex-end;
+        }
+
+        .message.bot {
+            background-color: #505e6e;
+            align-self: flex-start;
+        }
+
+        input[type="text"] {
+            padding: 12px;
+            width: calc(100% - 24px);
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+            background-color: #353a47;
+            color: white;
+        }
+
+        button {
+            padding: 12px 15px;
+            background-color: #4e8cff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #3572e5;
+        }
+
+        button:focus {
+            outline: none;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes gradientAnimation {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+        /* Media Queries for responsiveness */
+        @media (max-width: 600px) {
+            .chatbox {
+                width: 100%;
+                height: 90vh;
+                padding: 15px;
+            }
+
+            .chatbox-header {
+                font-size: 1.5rem;
+            }
+
+            .typewriter-text {
+                font-size: 1rem;
+            }
+
+            .messages {
+                padding-right: 5px;
+            }
+
+            input[type="text"] {
+                font-size: 0.9rem;
+            }
+
+            button {
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .chatbox {
+                padding: 10px;
+            }
+
+            .chatbox-header {
+                font-size: 1.2rem;
+            }
+
+            .typewriter-text {
+                font-size: 0.9rem;
+            }
+
+            input[type="text"] {
+                font-size: 0.9rem;
+            }
+
+            button {
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="chatbox">
+        
+        <div class="chatbox-header">
+            Kishore Chatbox
+        </div>
+        <center><div class="typewriter-text" style="font-size: small; margin-top: 3px;" >
+            Tell me a question About Full Stack Development?
+        </div></center>
+        <div class="messages" id="messages"></div>
+        <input type="text" id="userInput" placeholder="Ask me something..." />
+        <button onclick="sendMessage()">Send</button>
+    </div>
+
+    <script>
+        const messagesDiv = document.getElementById("messages");
+        const userInput = document.getElementById("userInput");
+
+        const fullStackData = {
+            "what is full stack development?": "Full Stack Development involves both front-end (user interface) and back-end (server, database) development. It requires skills in HTML, CSS, JavaScript, backend technologies like Node.js, and databases.",
+            "hi kishore": "Hi, how can I assist you today?",
+            "what is node.js?": "Node.js is a JavaScript runtime that allows you to run JavaScript on the server, not just the browser.",
+            "what is express?": "Express is a framework for Node.js that simplifies routing and handling HTTP requests.",
+            "what is rest api?": "A RESTful API allows communication between a client and a server through HTTP requests. It follows a set of conventions.",
+            "how do i install node.js?": "You can install Node.js by downloading the installer from the official website and following the setup instructions.",
+            // Frontend Development (HTML, CSS, JavaScript, React)
+    "What is Full Stack Development?": "Full Stack Development involves both front-end (user interface) and back-end (server, database) development. It requires skills in HTML, CSS, JavaScript, backend technologies like Node.js, and databases.",
+    "Hi Kishore":"Hi Your Sweet Name",
+    "Hi":"Hi How are You",
+    "fine":"Okay dude! How i can Help You Today",
+    "can You Help me":"Sure",
+
+// HTML Questions
+    "What is HTML?": "HTML (Hypertext Markup Language) is the standard language for creating web pages. It structures web content.",
+    "What is the purpose of the `<div>` tag in HTML?": "The `<div>` tag is used to group HTML elements for styling purposes or as a container for JavaScript functions.",
+    "What is the difference between HTML and HTML5?": "HTML5 is the latest version of HTML. It includes new features like native video and audio support, new APIs, and better accessibility features.",
+    "What are semantic HTML tags?": "Semantic HTML tags are tags that clearly describe their meaning in a human-readable way. Examples include `<header>`, `<footer>`, `<article>`, and `<section>`.",
+    "What is the purpose of the `<a>` tag in HTML?": "The `<a>` tag is used to define hyperlinks, which allow users to navigate from one page to another or to a different location within the same page.",
+    "What is the purpose of the `<html>` tag in HTML?": "The `<html>` tag is the root element of an HTML document, encompassing all the content and elements of the page.",
+    "What is the role of the `<head>` tag in HTML?": "The `<head>` tag contains meta-information about the HTML document, such as the title, character encoding, and links to external resources like CSS.",
+    "What is the function of the `<title>` tag in HTML?": "The `<title>` tag defines the title of the document, which appears in the browser tab.",
+    "What does the `<meta>` tag do in HTML?": "The `<meta>` tag provides metadata about the HTML document, such as author, description, keywords, and character encoding.",
+    "What is the purpose of the `<body>` tag in HTML?": "The `<body>` tag contains the content of the web page, such as text, images, links, and other elements.",
+    "What is the difference between block-level and inline elements?": "Block-level elements occupy the full width available and start on a new line (e.g., `<div>`), while inline elements take up only as much width as necessary and do not start on a new line (e.g., `<span>`).",
+    "What is the purpose of the `<img>` tag in HTML?": "The `<img>` tag is used to embed images in an HTML document.",
+    "What is the `src` attribute in the `<img>` tag?": "The `src` attribute specifies the source (file path or URL) of the image.",
+    "What does the `alt` attribute in the `<img>` tag do?": "The `alt` attribute provides alternative text for the image when it cannot be displayed.",
+    "What is the difference between the `<ul>` and `<ol>` tags?": "The `<ul>` tag defines an unordered (bulleted) list, while the `<ol>` tag defines an ordered (numbered) list.",
+    "How do you create a hyperlink in HTML?": "A hyperlink is created using the `<a>` tag, with the `href` attribute specifying the target URL.",
+    "What is the difference between `id` and `class` attributes in HTML?": "The `id` attribute is unique and used to identify a single element, while the `class` attribute can be used to apply styles to multiple elements.",
+    "What is the purpose of the `<form>` tag in HTML?": "The `<form>` tag is used to define an HTML form for collecting user input.",
+    "What is the role of the `action` attribute in a form?": "The `action` attribute specifies the URL where the form data will be submitted.",
+    "What is the function of the `method` attribute in a form?": "The `method` attribute specifies the HTTP method (e.g., `GET` or `POST`) used to send the form data.",
+    "What is the purpose of the `<input>` tag in HTML?": "The `<input>` tag is used to define various types of user input fields, such as text, radio buttons, checkboxes, and more.",
+    "What is the difference between the `GET` and `POST` methods in HTML forms?": "The `GET` method appends form data to the URL, while the `POST` method sends the data as part of the HTTP request body, making it more secure.",
+    "What is the `<textarea>` tag used for in HTML?": "The `<textarea>` tag is used to create a multi-line text input field.",
+    "What is the purpose of the `<button>` tag in HTML?": "The `<button>` tag is used to create clickable buttons in HTML forms.",
+    "What is the `<select>` tag in HTML?": "The `<select>` tag is used to create a dropdown menu in a form, allowing users to choose from a list of options.",
+    "What is the role of the `<option>` tag in a `<select>` dropdown?": "The `<option>` tag is used to define individual options within a `<select>` dropdown menu.",
+    "What is the `<label>` tag used for in HTML?": "The `<label>` tag is used to define labels for form controls, improving accessibility.",
+    "What is the purpose of the `<iframe>` tag in HTML?": "The `<iframe>` tag is used to embed another HTML page within the current page, creating an inline frame.",
+    "What is the `target` attribute in an `<a>` tag?": "The `target` attribute specifies where the linked document will open (e.g., in the same window, a new tab, or a specific frame).",
+    "What is the difference between `href` and `src` attributes?": "The `href` attribute is used in links to specify the target URL, while the `src` attribute is used in media elements like `<img>`, `<audio>`, and `<video>` to define the source file.",
+    "What does the `lang` attribute in the `<html>` tag specify?": "The `lang` attribute specifies the language of the document's content (e.g., `en` for English, `fr` for French).",
+    "What is the purpose of the `<nav>` tag in HTML?": "The `<nav>` tag is used to define a section of the page that contains navigation links.",
+    "What does the `<header>` tag represent in HTML?": "The `<header>` tag is used to define the introductory content of a page or a section, such as a logo, title, or navigation.",
+    "What is the purpose of the `<footer>` tag in HTML?": "The `<footer>` tag defines the footer of a document or a section, typically containing copyright information, links, and contact details.",
+    "What does the `<article>` tag represent in HTML?": "The `<article>` tag is used to define self-contained content that can be distributed independently (e.g., blog posts or news articles).",
+    "What is the `<section>` tag used for in HTML?": "The `<section>` tag is used to group related content within a document, typically with a heading.",
+    "What is the `<aside>` tag in HTML?": "The `<aside>` tag defines content that is tangentially related to the main content, like sidebars or pull quotes.",
+    "What does the `<mark>` tag do in HTML?": "The `<mark>` tag highlights text for emphasis, often used to highlight search terms.",
+    "What is the role of the `<strong>` tag in HTML?": "The `<strong>` tag is used to emphasize text, making it bold by default, indicating strong importance.",
+    "What does the `<em>` tag represent in HTML?": "The `<em>` tag is used to emphasize text, usually displayed in italics, representing stressed emphasis.",
+    "What is the `<b>` tag in HTML?": "The `<b>` tag is used to bold text, but it has no semantic meaning regarding importance.",
+    "What is the `<i>` tag in HTML?": "The `<i>` tag is used to italicize text, typically for text in foreign languages, technical terms, or names of things.",
+    "What does the `<br>` tag do in HTML?": "The `<br>` tag is used to insert a line break in text, starting a new line without creating a new paragraph.",
+    "What is the `<hr>` tag in HTML?": "The `<hr>` tag is used to create a thematic break or horizontal line between sections of content.",
+    "What is the purpose of the `<link>` tag in HTML?": "The `<link>` tag is used to link external resources, such as CSS files, to an HTML document.",
+    "What is the `<style>` tag in HTML?": "The `<style>` tag is used to define internal CSS styles within an HTML document.",
+    "What is the purpose of the `alt` attribute in the `<img>` tag?": "The `alt` attribute provides alternative text for the image, which is displayed if the image cannot be loaded or for screen readers.",
+    "What is the `rel` attribute in the `<link>` tag?": "The `rel` attribute specifies the relationship between the current document and the linked document (e.g., `stylesheet` for CSS).",
+    "What does the `charset` attribute do in the `<meta>` tag?": "The `charset` attribute defines the character encoding used in the document, such as UTF-8.",
+    "What does the `viewport` meta tag do in HTML?": "The `viewport` meta tag controls the layout on mobile devices, specifying the visible area and scaling.",
+    "What is the `<canvas>` tag in HTML?": "The `<canvas>` tag is used to draw graphics, such as shapes or images, dynamically with JavaScript.",
+    "What is the purpose of the `<svg>` tag in HTML?": "The `<svg>` tag is used to embed scalable vector graphics (SVG) directly into the HTML document.",
+    "What is the `<audio>` tag in HTML?": "The `<audio>` tag is used to embed audio files, such as MP3 or Ogg, within a web page.",
+    "What is the `<video>` tag in HTML?": "The `<video>` tag is used to embed video files, such as MP4, WebM, or Ogg, within a web page.",
+    "What is the `controls` attribute in the `<audio>` and `<video>` tags?": "The `controls` attribute adds playback controls like play, pause, and volume for media elements.",
+    "What is the `<source>` tag used for in HTML?": "The `<source>` tag specifies multiple media sources for the `<audio>` and `<video>` tags, allowing the browser to choose the best format.",
+    "What does the `autoplay` attribute do in the `<audio>` and `<video>` tags?": "The `autoplay` attribute automatically starts playing the media as soon as it's ready.",
+    "What is the `loop` attribute in the `<audio>` and `<video>` tags?": "The `loop` attribute causes the media to start over and play again once it reaches the end.",
+    "What is the `<progress>` tag in HTML?": "The `<progress>` tag is used to display a progress bar indicating the completion of a task, such as file uploads.",
+    "What is the `<meter>` tag in HTML?": "The `<meter>` tag represents a scalar measurement within a known range, such as a gauge or rating scale.",
+    "What is the `disabled` attribute in HTML forms?": "The `disabled` attribute prevents users from interacting with a form element, such as a button or input field.",
+    "What does the `readonly` attribute do in HTML?": "The `readonly` attribute makes an input field uneditable, preventing the user from changing its value, but it can still be selected and copied.",
+    "What is the `required` attribute in HTML forms?": "The `required` attribute specifies that a form field must be filled out before submitting the form.",
+    "What is the `pattern` attribute in HTML?": "The `pattern` attribute allows you to specify a regular expression that the input field's value must match to be valid.",
+    "What is the `placeholder` attribute in HTML?": "The `placeholder` attribute provides a hint or sample value inside an input field before the user enters a value.",
+    "What does the `action` attribute in a form specify?": "The `action` attribute specifies the URL where the form data will be sent when the form is submitted.",
+    "What is the `method` attribute in a form used for?": "The `method` attribute specifies how the form data will be sent (either `GET` or `POST`).",
+    "What is the purpose of the `enctype` attribute in a form?": "The `enctype` attribute defines how the form data should be encoded when submitting it, such as `multipart/form-data` for file uploads.",
+    "What is the role of the `target` attribute in an anchor tag?": "The `target` attribute defines where the linked document will open (e.g., `_blank` for a new tab).",
+    "What is the `<noscript>` tag in HTML?": "The `<noscript>` tag defines content to be displayed when the user's browser does not support JavaScript or has it disabled.",
+    "What is the `<figure>` tag in HTML?": "The `<figure>` tag is used to represent self-contained content, often with a caption, like an image, video, or chart.",
+    "What is the `<figcaption>` tag in HTML?": "The `<figcaption>` tag is used to provide a caption or description for a `<figure>` element.",
+    "What is the `defer` attribute in the `<script>` tag?": "The `defer` attribute allows the script to be executed after the HTML document has been completely parsed.",
+    "What is the `async` attribute in the `<script>` tag?": "The `async` attribute allows the script to be executed asynchronously as soon as it is downloaded, without blocking other page content.",
+    "What does the `doctype` declaration in HTML do?": "The `doctype` declaration specifies the document type and version of HTML being used (e.g., HTML5).",
+    "What is the purpose of the `<html>` tag in HTML?": "The `<html>` tag is the root element that encloses all the content of an HTML document.",
+    "What is the difference between `id` and `class` attributes in HTML?": "The `id` attribute is unique and identifies a single element, whereas the `class` attribute can be used for multiple elements.",
+    "What is the `<header>` tag used for in HTML?": "The `<header>` tag defines introductory content or navigational links at the top of a section or page.",
+    "What is the `<footer>` tag used for in HTML?": "The `<footer>` tag defines footer content, often containing copyright information, contact details, and links.",
+    "What is the `<article>` tag used for in HTML?": "The `<article>` tag is used to define content that can stand alone, such as blog posts or news articles.",
+    "What does the `<section>` tag represent in HTML?": "The `<section>` tag defines a section of content in a document, often with its own heading.",
+    "What is the `<nav>` tag used for in HTML?": "The `<nav>` tag is used to define a section of the page that contains navigation links.",
+    "What is the `<div>` tag used for in HTML?": "The `<div>` tag is a generic container used to group other HTML elements together for styling or scripting purposes.",
+    "What is the purpose of the `<span>` tag in HTML?": "The `<span>` tag is an inline container used to apply styles or scripts to a part of text or content.",
+    "What is the `<h1>` to `<h6>` tags used for in HTML?": "The `<h1>` to `<h6>` tags define headings of different levels, with `<h1>` being the highest (most important) and `<h6>` the lowest.",
+    "What is the `<strong>` tag in HTML?": "The `<strong>` tag is used to give text strong emphasis, typically rendering it in bold.",
+    "What is the `<em>` tag in HTML?": "The `<em>` tag is used to emphasize text, typically displayed in italics.",
+    "What is the `<p>` tag used for in HTML?": "The `<p>` tag defines a paragraph of text in HTML.",
+    "What does the `<br>` tag do in HTML?": "The `<br>` tag inserts a line break in the text, starting a new line without creating a new paragraph.",
+    "What is the purpose of the `<ul>` and `<ol>` tags in HTML?": "The `<ul>` tag creates an unordered (bulleted) list, while the `<ol>` tag creates an ordered (numbered) list.",
+    "What is the `<li>` tag used for in HTML?": "The `<li>` tag defines a list item, used within `<ul>` or `<ol>` tags.",
+    "What is the `<a>` tag used for in HTML?": "The `<a>` tag is used to create hyperlinks, allowing users to navigate to other pages or resources.",
+    "What is the `href` attribute in the `<a>` tag?": "The `href` attribute specifies the URL or location to navigate to when the link is clicked.",
+    "What is the `target` attribute in the `<a>` tag?": "The `target` attribute specifies where to open the linked document, such as in a new tab (`_blank`).",
+    "What is the `title` attribute in the `<a>` tag?": "The `title` attribute provides additional information about the link, usually displayed as a tooltip when the user hovers over the link.",
+    "What is the `<img>` tag used for in HTML?": "The `<img>` tag is used to embed an image in a web page.",
+    "What does the `src` attribute in the `<img>` tag do?": "The `src` attribute specifies the source (file path or URL) of the image to display.",
+    "What is the `alt` attribute in the `<img>` tag?": "The `alt` attribute provides alternative text for an image if it cannot be displayed or for screen readers.",
+    "What is the `width` and `height` attributes in the `<img>` tag?": "The `width` and `height` attributes define the dimensions of the image, typically in pixels.",
+    "What is the `<audio>` tag used for in HTML?": "The `<audio>` tag is used to embed audio files such as MP3, Ogg, or WAV.",
+    "What is the `<video>` tag used for in HTML?": "The `<video>` tag is used to embed video files such as MP4, WebM, or Ogg.",
+    "What is the `controls` attribute in the `<audio>` and `<video>` tags?": "The `controls` attribute adds play, pause, volume, and other playback controls to media elements.",
+    "What is the `autoplay` attribute in the `<audio>` and `<video>` tags?": "The `autoplay` attribute automatically starts playing the media when it is ready.",
+    "What is the `loop` attribute in the `<audio>` and `<video>` tags?": "The `loop` attribute makes the media play continuously by restarting it when it finishes.",
+    "What is the `<iframe>` tag used for in HTML?": "The `<iframe>` tag is used to embed another HTML document within the current page.",
+    "What is the `sandbox` attribute in the `<iframe>` tag?": "The `sandbox` attribute restricts actions within the iframe, such as form submission, scripts, and plugins, to improve security.",
+    "What is the `<form>` tag used for in HTML?": "The `<form>` tag is used to create an HTML form for user input.",
+    "What is the `action` attribute in a form?": "The `action` attribute specifies the URL to which the form data will be sent when the form is submitted.",
+    "What is the `method` attribute in a form?": "The `method` attribute specifies the HTTP method (GET or POST) used to send the form data.",
+    "What is the `enctype` attribute in a form?": "The `enctype` attribute defines how the form data should be encoded when sent, such as `multipart/form-data` for file uploads.",
+    "What is the `<input>` tag used for in HTML?": "The `<input>` tag is used to create various types of user input fields, such as text, radio buttons, and checkboxes.",
+    "What is the `type` attribute in the `<input>` tag?": "The `type` attribute specifies the type of input control, such as `text`, `password`, `checkbox`, or `radio`.",
+    "What is the `<textarea>` tag used for in HTML?": "The `<textarea>` tag is used to create a multi-line text input field.",
+    "What is the `<button>` tag used for in HTML?": "The `<button>` tag is used to create clickable buttons in forms or elsewhere on a page.",
+    "What is the `<select>` tag used for in HTML?": "The `<select>` tag is used to create a dropdown menu with multiple options for users to choose from.",
+    "What is the `<option>` tag used for in a `<select>` dropdown?": "The `<option>` tag defines individual options inside a `<select>` dropdown menu.",
+    "What is the `disabled` attribute in HTML forms?": "The `disabled` attribute prevents the user from interacting with an input field, checkbox, or button.",
+    "What is the `readonly` attribute in HTML forms?": "The `readonly` attribute makes an input field uneditable but still selectable, allowing the user to copy its value.",
+    "What is the `required` attribute in HTML forms?": "The `required` attribute specifies that an input field must be filled out before submitting the form.",
+    "What is the `pattern` attribute in HTML forms?": "The `pattern` attribute specifies a regular expression that the input field's value must match to be considered valid.",
+    "What is the `placeholder` attribute in HTML forms?": "The `placeholder` attribute provides a hint or example value inside an input field before the user enters data.",
+    "What is the `<label>` tag used for in HTML?": "The `<label>` tag is used to define labels for form elements, improving accessibility.",
+    "What is the `for` attribute in the `<label>` tag?": "The `for` attribute associates the label with a specific form element by matching its `id`.",
+    "What is the `action` attribute in a form?": "The `action` attribute specifies where the form data should be sent when the form is submitted.",
+    "What is the `method` attribute in a form?": "The `method` attribute determines how form data will be sent to the server: `GET` appends data to the URL, while `POST` sends data in the request body.",
+    "What is the purpose of the `target` attribute in an anchor (`<a>`) tag?": "The `target` attribute determines where to open the linked document, such as in a new window or tab (`_blank`).",
+    "What is the `<figcaption>` tag used for in HTML?": "The `<figcaption>` tag is used to provide a caption or description for a `<figure>` element like an image or video.",
+    "What does the `lang` attribute in the `<html>` tag do?": "The `lang` attribute specifies the primary language of the content in the HTML document (e.g., `en` for English).",
+    "What is the `charset` attribute in the `<meta>` tag?": "The `charset` attribute specifies the character encoding used in the document, such as UTF-8.",
+    "What is the `viewport` meta tag used for in HTML?": "The `viewport` meta tag controls the layout on mobile devices, ensuring proper scaling and responsiveness.",
+    "What is the `<canvas>` tag used for in HTML?": "The `<canvas>` tag is used to draw graphics, such as shapes or images, dynamically using JavaScript.",
+    "What is the `<svg>` tag used for in HTML?": "The `<svg>` tag is used to define scalable vector graphics (SVG) directly in the HTML document.",
+    "What is the `<noscript>` tag used for in HTML?": "The `<noscript>` tag is used to provide content that will be displayed when the user's browser does not support or has disabled JavaScript.",
+    "What does the `defer` attribute in the `<script>` tag do?": "The `defer` attribute ensures that the script is executed after the HTML document has been fully parsed.",
+    "What is the `async` attribute in the `<script>` tag?": "The `async` attribute allows the script to be executed asynchronously as soon as it is downloaded, without blocking other page content.",
+    "What is the `crossorigin` attribute in the `<script>` tag?": "The `crossorigin` attribute specifies how cross-origin requests for the script should be handled.",
+    "What is the purpose of the `integrity` attribute in the `<script>` tag?": "The `integrity` attribute allows you to specify a cryptographic hash to ensure the integrity of the loaded script file.",
+    "What is the `<meta>` tag used for in HTML?": "The `<meta>` tag provides metadata about the HTML document, such as character encoding, keywords, and viewport settings.",
+    "What is the `name` attribute in the `<meta>` tag?": "The `name` attribute specifies the name of the metadata, such as `description` or `keywords`.",
+    "What is the `http-equiv` attribute in the `<meta>` tag?": "The `http-equiv` attribute simulates an HTTP header, allowing you to define content like `content-type` or `refresh`.",
+    "What is the `content` attribute in the `<meta>` tag?": "The `content` attribute defines the value for the metadata specified by the `name` or `http-equiv` attribute.",
+    "What is the purpose of the `<link>` tag in HTML?": "The `<link>` tag is used to link external resources to the HTML document, such as stylesheets or icons.",
+    "What is the `rel` attribute in the `<link>` tag?": "The `rel` attribute specifies the relationship between the current document and the linked resource (e.g., `stylesheet` for linking a CSS file).",
+    "What is the `href` attribute in the `<link>` tag?": "The `href` attribute specifies the URL or path to the linked resource, such as a CSS file or an icon.",
+    "What is the `<style>` tag used for in HTML?": "The `<style>` tag is used to define CSS styles directly within an HTML document.",
+    "What is the `type` attribute in the `<style>` tag?": "The `type` attribute specifies the type of content in the `<style>` tag, commonly set to `text/css`.",
+    "What is the `<script>` tag used for in HTML?": "The `<script>` tag is used to include JavaScript code within an HTML document.",
+    "What is the `src` attribute in the `<script>` tag?": "The `src` attribute specifies the URL or file path to an external JavaScript file to be included in the document.",
+    "What is the `type` attribute in the `<script>` tag?": "The `type` attribute specifies the type of script, commonly set to `text/javascript`.",
+    "What is the `defer` attribute in the `<script>` tag?": "The `defer` attribute ensures that the script is executed after the document has been completely parsed.",
+    "What is the `async` attribute in the `<script>` tag?": "The `async` attribute allows the script to be executed asynchronously, as soon as it is downloaded.",
+    "What is the `crossorigin` attribute in the `<script>` tag?": "The `crossorigin` attribute specifies how cross-origin requests should be handled for the script file.",
+    "What is the `integrity` attribute in the `<script>` tag?": "The `integrity` attribute provides a hash to verify the integrity of the script file being loaded.",
+    "What is the `<object>` tag used for in HTML?": "The `<object>` tag is used to embed external resources, such as multimedia, Java applets, or Flash files, into a webpage.",
+    "What is the `data` attribute in the `<object>` tag?": "The `data` attribute specifies the URL of the resource to be embedded within the `<object>` tag.",
+    "What is the `type` attribute in the `<object>` tag?": "The `type` attribute specifies the MIME type of the embedded resource.",
+    "What is the `width` and `height` attribute in the `<object>` tag?": "The `width` and `height` attributes define the dimensions of the embedded resource.",
+    "What is the `<embed>` tag used for in HTML?": "The `<embed>` tag is used to embed external content such as audio, video, or interactive elements.",
+    "What is the `type` attribute in the `<embed>` tag?": "The `type` attribute specifies the MIME type of the embedded content, such as `audio/mp3` or `application/pdf`.",
+    "What is the `<param>` tag used for in HTML?": "The `<param>` tag is used to define parameters for an embedded object, such as a Flash object.",
+    "What is the `name` attribute in the `<param>` tag?": "The `name` attribute specifies the name of the parameter in the `<param>` tag.",
+    "What is the `value` attribute in the `<param>` tag?": "The `value` attribute specifies the value to be passed to the parameter in the `<param>` tag.",
+    "What is the `<source>` tag used for in HTML?": "The `<source>` tag is used to specify multiple media resources for the `<audio>` or `<video>` tags, allowing for fallback options.",
+    "What is the `media` attribute in the `<source>` tag?": "The `media` attribute specifies a media query, defining when to use a particular source, such as for different screen sizes or devices.",
+    "What is the `type` attribute in the `<source>` tag?": "The `type` attribute specifies the MIME type of the media file, such as `video/mp4` or `audio/ogg`.",
+    "What is the `<track>` tag used for in HTML?": "The `<track>` tag is used to specify text tracks for `<video>` or `<audio>` elements, such as subtitles or captions.",
+    "What is the `kind` attribute in the `<track>` tag?": "The `kind` attribute specifies the type of track, such as `subtitles`, `captions`, `descriptions`, or `chapters`.",
+    "What is the `src` attribute in the `<track>` tag?": "The `src` attribute specifies the URL of the text track file, such as a `.vtt` file for subtitles.",
+    "What is the `srclang` attribute in the `<track>` tag?": "The `srclang` attribute specifies the language of the text track, such as `en` for English.",
+    "What is the `default` attribute in the `<track>` tag?": "The `default` attribute specifies that the track should be shown by default when the media is played.",
+    "What is the `<bdo>` tag used for in HTML?": "The `<bdo>` tag is used to override the current text direction, enabling bidirectional text control.",
+    "What is the `dir` attribute in the `<bdo>` tag?": "The `dir` attribute specifies the text direction for the content inside the `<bdo>` tag, such as `ltr` for left-to-right or `rtl` for right-to-left.",
+    "What is the `<wbr>` tag used for in HTML?": "The `<wbr>` tag is used to suggest a line break opportunity within text, where the browser can break the line if necessary.",
+    "What is the `<mark>` tag used for in HTML?": "The `<mark>` tag is used to highlight parts of text, typically to indicate that it is relevant or matched in a search.",
+    "What is the `<small>` tag used for in HTML?": "The `<small>` tag is used to display text in a smaller font, often used for fine print or legal disclaimers.",
+    "What is the `<del>` tag used for in HTML?": "The `<del>` tag is used to indicate text that has been deleted or is no longer relevant.",
+    "What is the `<ins>` tag used for in HTML?": "The `<ins>` tag is used to indicate text that has been inserted or added to the document.",
+    "What is the `<sub>` tag used for in HTML?": "The `<sub>` tag is used to display text as subscript, typically used in chemical formulas or mathematical expressions.",
+    "What is the `<sup>` tag used for in HTML?": "The `<sup>` tag is used to display text as superscript, typically used for exponents or footnotes.",
+    "What is the `<address>` tag used for in HTML?": "The `<address>` tag is used to represent contact information, typically for the author of the document or article.",
+    "What is the `<cite>` tag used for in HTML?": "The `<cite>` tag is used to reference a citation, such as the title of a book, article, or website.",
+    "What is the `<dfn>` tag used for in HTML?": "The `<dfn>` tag is used to define a term, often within a definition or glossary.",
+    "What is the `<abbr>` tag used for in HTML?": "The `<abbr>` tag is used to represent an abbreviation or acronym, often with an optional `title` attribute providing the full form.",
+    "What is the `<b>` tag used for in HTML?": "The `<b>` tag is used to apply bold styling to text, but it does not imply any special importance or meaning.",
+    "What is the `<i>` tag used for in HTML?": "The `<i>` tag is used to apply italic styling to text, typically for technical terms or foreign words.",
+    "What is the `<u>` tag used for in HTML?": "The `<u>` tag is used to underline text, often used to emphasize or highlight it.",
+    "What is the `<s>` tag used for in HTML?": "The `<s>` tag is used to represent text that is no longer accurate or relevant, typically shown with a strikethrough.",
+    "What is the `<q>` tag used for in HTML?": "The `<q>` tag is used to define short inline quotations, typically rendered with quotation marks.",
+    "What is the `<blockquote>` tag used for in HTML?": "The `<blockquote>` tag is used to define a large section of quoted text, typically rendered with indents and citation information.",
+    "What is the `<code>` tag used for in HTML?": "The `<code>` tag is used to represent computer code or programming syntax within a document.",
+    "What is the `<pre>` tag used for in HTML?": "The `<pre>` tag is used to define preformatted text, preserving whitespace and line breaks exactly as written.",
+    "What is the `<kbd>` tag used for in HTML?": "The `<kbd>` tag is used to define user input, such as keyboard presses or commands.",
+    "What is the `<samp>` tag used for in HTML?": "The `<samp>` tag is used to define sample output from a computer program or script.",
+    "What is the `<var>` tag used for in HTML?": "The `<var>` tag is used to define a variable in a mathematical expression or programming context.",
+    "What is the `<time>` tag used for in HTML?": "The `<time>` tag is used to define a specific time or date, often with machine-readable attributes for better accessibility.",
+    "What is the `<progress>` tag used for in HTML?": "The `<progress>` tag is used to display the progress of a task, such as a file download or a progress bar.",
+    "What is the `<meter>` tag used for in HTML?": "The `<meter>` tag is used to represent a scalar measurement within a defined range, such as a battery level or temperature.",
+    "What is the `<details>` tag used for in HTML?": "The `<details>` tag is used to define a section of content that can be shown or hidden by the user.",
+    "What is the `<summary>` tag used for in HTML?": "The `<summary>` tag defines a summary for the `<details>` element, typically used to toggle the visibility of hidden content.",
+    "What is the `<fieldset>` tag used for in HTML?": "The `<fieldset>` tag is used to group related elements in a form, typically accompanied by the `<legend>` tag.",
+    "What is the `<legend>` tag used for in HTML?": "The `<legend>` tag defines a caption or title for a `<fieldset>` element, improving form accessibility.",
+    "What is the `<form>` tag used for in HTML?": "The `<form>` tag is used to collect user input and send it to the server for processing.",
+    "What is the `action` attribute in a form?": "The `action` attribute specifies the URL where the form data will be sent when the form is submitted.",
+    "What is the `method` attribute in a form?": "The `method` attribute specifies how the form data will be sent (either `GET` or `POST`).",
+    "What is the `enctype` attribute in a form?": "The `enctype` attribute defines how the form data should be encoded when sending, such as `multipart/form-data` for file uploads.",
+    "What is the `target` attribute in a form?": "The `target` attribute specifies where to display the response from the form submission, such as a new window (`_blank`).",
+    "What is the `name` attribute in a form?": "The `name` attribute assigns a unique name to a form element, used to reference it in the script or when submitting the form data.",
+    "What is the `value` attribute in a form?": "The `value` attribute specifies the value of a form element, such as the value of a checkbox, radio button, or input field.",
+    "What is the `<input>` tag used for in HTML?": "The `<input>` tag is used to create interactive controls for the user to input data within a form.",
+    "What is the `type` attribute in the `<input>` tag?": "The `type` attribute specifies the type of input control, such as `text`, `password`, `checkbox`, `radio`, `email`, and more.",
+    "What is the `value` attribute in the `<input>` tag?": "The `value` attribute specifies the default value of an `<input>` element, or the value that will be submitted with the form.",
+    "What is the `name` attribute in the `<input>` tag?": "The `name` attribute defines the name of an `<input>` element, which is used to reference form data after submission.",
+    "What is the `placeholder` attribute in the `<input>` tag?": "The `placeholder` attribute provides a short hint describing the expected value of the `<input>` field, visible before the user types anything.",
+    "What is the `required` attribute in the `<input>` tag?": "The `required` attribute makes the input field mandatory to fill before submitting the form.",
+    "What is the `disabled` attribute in the `<input>` tag?": "The `disabled` attribute makes the input element unresponsive to user interaction.",
+    "What is the `readonly` attribute in the `<input>` tag?": "The `readonly` attribute prevents users from changing the value of the `<input>` field, though it can be selected and copied.",
+    "What is the `autofocus` attribute in the `<input>` tag?": "The `autofocus` attribute automatically focuses on the `<input>` element when the page is loaded.",
+    "What is the `min` and `max` attribute in the `<input>` tag?": "The `min` and `max` attributes define the acceptable range of values for numeric input fields, such as `range` or `number` types.",
+    "What is the `step` attribute in the `<input>` tag?": "The `step` attribute specifies the interval between valid values for `<input>` types like `number`, `range`, and `date`.",
+    "What is the `accept` attribute in the `<input>` tag?": "The `accept` attribute specifies the types of files that the `<input>` element can accept, such as image files or documents.",
+    "What is the `size` attribute in the `<input>` tag?": "The `size` attribute specifies the visible width of an `<input>` element in characters.",
+    "What is the `maxlength` attribute in the `<input>` tag?": "The `maxlength` attribute defines the maximum number of characters the user can enter into an `<input>` element.",
+    "What is the `pattern` attribute in the `<input>` tag?": "The `pattern` attribute allows you to define a regular expression that the input value must match for the form to be submitted.",
+    "What is the `list` attribute in the `<input>` tag?": "The `list` attribute links an `<input>` element to a `<datalist>` element, providing a list of predefined options for the input field.",
+    "What is the `<textarea>` tag used for in HTML?": "The `<textarea>` tag is used to create a multi-line text input field for longer user input, such as comments or descriptions.",
+    "What is the `rows` attribute in the `<textarea>` tag?": "The `rows` attribute specifies the visible height of a `<textarea>` element in terms of the number of lines.",
+    "What is the `cols` attribute in the `<textarea>` tag?": "The `cols` attribute specifies the visible width of a `<textarea>` element in terms of the number of characters.",
+    "What is the `wrap` attribute in the `<textarea>` tag?": "The `wrap` attribute defines how text in a `<textarea>` is wrapped when submitted—either as `soft` (default) or `hard`.",
+    "What is the `<select>` tag used for in HTML?": "The `<select>` tag is used to create a dropdown list, allowing the user to select one or more options.",
+    "What is the `<option>` tag used for in HTML?": "The `<option>` tag defines a single item within a `<select>` dropdown list.",
+    "What is the `selected` attribute in the `<option>` tag?": "The `selected` attribute specifies that a particular option is preselected when the page loads.",
+    "What is the `disabled` attribute in the `<option>` tag?": "The `disabled` attribute makes the option unselectable in a dropdown list.",
+    "What is the `multiple` attribute in the `<select>` tag?": "The `multiple` attribute allows the user to select more than one option in a `<select>` dropdown list.",
+    "What is the `<optgroup>` tag used for in HTML?": "The `<optgroup>` tag is used to group related options inside a `<select>` dropdown, providing a way to organize options.",
+    "What is the `<button>` tag used for in HTML?": "The `<button>` tag defines a clickable button, often used to submit forms or trigger JavaScript events.",
+    "What is the `type` attribute in the `<button>` tag?": "The `type` attribute defines the behavior of the button, such as `submit`, `reset`, or `button` for custom actions.",
+    "What is the `disabled` attribute in the `<button>` tag?": "The `disabled` attribute disables the button, preventing user interaction.",
+    "What is the `autofocus` attribute in the `<button>` tag?": "The `autofocus` attribute automatically gives focus to the button when the page loads.",
+    "What is the `<fieldset>` tag used for in HTML?": "The `<fieldset>` tag is used to group related elements in a form, typically used for structuring forms with multiple sections.",
+    "What is the `<legend>` tag used for in HTML?": "The `<legend>` tag provides a title or caption for the content within a `<fieldset>` element, improving accessibility.",
+    "What is the `<form>` tag used for in HTML?": "The `<form>` tag is used to collect user input and submit it to a server for processing.",
+    "What is the `action` attribute in the `<form>` tag?": "The `action` attribute specifies the URL where the form data will be submitted when the form is submitted.",
+    "What is the `method` attribute in the `<form>` tag?": "The `method` attribute specifies how the form data will be sent to the server (e.g., `GET` or `POST`).",
+    "What is the `enctype` attribute in the `<form>` tag?": "The `enctype` attribute specifies how the form data should be encoded when sent, such as `multipart/form-data` for file uploads.",
+    "What is the `target` attribute in the `<form>` tag?": "The `target` attribute specifies where to display the response from the form submission, such as in a new window or the same window.",
+    "What is the `<label>` tag used for in HTML?": "The `<label>` tag is used to define a label for an `<input>` element, improving accessibility and usability.",
+    "What is the `for` attribute in the `<label>` tag?": "The `for` attribute links the `<label>` to an `<input>` element by referencing the input's `id` attribute.",
+    "What is the `form` attribute in the `<label>` tag?": "The `form` attribute specifies which form the `<label>` belongs to, useful when the label is outside the form.",
+    "What is the `<output>` tag used for in HTML?": "The `<output>` tag is used to represent the result of a calculation or user action in a form.",
+    "What is the `for` attribute in the `<output>` tag?": "The `for` attribute specifies which form elements the `<output>` element is associated with for displaying the result.",
+    "What is the `<datalist>` tag used for in HTML?": "The `<datalist>` tag defines a set of predefined options for an `<input>` element, enabling autocomplete suggestions.",
+    "What is the `id` attribute in the `<datalist>` tag?": "The `id` attribute gives a unique identifier to the `<datalist>` element, allowing it to be referenced by an `<input>` element's `list` attribute.",
+    "What is the `formaction` attribute in the `<button>` tag?": "The `formaction` attribute specifies the URL where the form data will be submitted when the button is clicked, overriding the `action` attribute of the form.",
+    "What is the `formenctype` attribute in the `<button>` tag?": "The `formenctype` attribute specifies how form data should be encoded when the button is used to submit a form, overriding the `enctype` attribute of the form.",
+    "What is the `formmethod` attribute in the `<button>` tag?": "The `formmethod` attribute specifies the HTTP method (`GET` or `POST`) to be used when submitting the form data, overriding the `method` attribute of the form.",
+    "What is the `formtarget` attribute in the `<button>` tag?": "The `formtarget` attribute specifies where to display the response after submitting the form, such as in a new window.",
+    "What is the `<i>` tag used for in HTML?": "The `<i>` tag is used to apply italic styling to text, typically for technical terms or foreign words.",
+    "What is the `<b>` tag used for in HTML?": "The `<b>` tag is used to apply bold styling to text, typically for emphasizing or highlighting important content.",
+    "What is the `<u>` tag used for in HTML?": "The `<u>` tag is used to underline text, typically for emphasis or as a link.",
+    "What is the `<em>` tag used for in HTML?": "The `<em>` tag is used to emphasize text, often rendered in italics.",
+    "What is the `<strong>` tag used for in HTML?": "The `<strong>` tag is used to indicate that the text has strong importance, often rendered in bold.",
+    "What is the `<small>` tag used for in HTML?": "The `<small>` tag is used to represent text that should be displayed in a smaller font, typically for fine print or legal disclaimers.",
+    "What is the `<abbr>` tag used for in HTML?": "The `<abbr>` tag is used to represent an abbreviation or acronym, often with an optional `title` attribute providing the full form.",
+    "What is HTML?": "HTML (Hypertext Markup Language) is the standard language for creating and structuring content on the web, such as text, images, links, and forms.",
+    "What does `<html>` represent in HTML?": "The `<html>` tag is the root element of an HTML document and contains all other HTML elements within it.",
+    "What is the purpose of the `<head>` tag in HTML?": "The `<head>` tag contains meta-information about the HTML document, such as the document title, character set, and links to stylesheets and scripts.",
+    "What is the purpose of the `<body>` tag in HTML?": "The `<body>` tag contains the main content of the web page that will be visible to users, including text, images, and other elements.",
+    "What is the difference between `<h1>` and `<h2>` tags in HTML?": "`<h1>` is the highest level heading, typically used for the main title, while `<h2>` is used for secondary headings or subheadings.",
+    "What is the `<a>` tag in HTML?": "The `<a>` tag is used to create hyperlinks, allowing users to click and navigate to another page or section of the page.",
+    "What is the purpose of the `<img>` tag in HTML?": "The `<img>` tag is used to embed images in a webpage. It requires the `src` attribute to define the image source.",
+    "What is the purpose of the `alt` attribute in an `<img>` tag?": "The `alt` attribute provides alternative text for an image if it cannot be displayed. It helps with accessibility for users with screen readers.",
+    "What is the `<div>` tag used for in HTML?": "The `<div>` tag is used to group elements together for styling or scripting purposes, making it easier to manage sections of a page.",
+    "What is the `<span>` tag in HTML?": "The `<span>` tag is an inline container used to group small pieces of content together, typically for styling purposes.",
+    "What is the difference between a `<div>` and a `<span>` tag in HTML?": "The `<div>` tag is a block-level element used for grouping, while the `<span>` tag is an inline element used for smaller groupings.",
+    "What is the `<ul>` tag in HTML?": "The `<ul>` tag is used to create an unordered list, where each item is defined by the `<li>` tag. Items in this list are typically bullet-pointed.",
+    "What is the `<ol>` tag in HTML?": "The `<ol>` tag is used to create an ordered list, where each item is numbered. Like `<ul>`, items are defined by the `<li>` tag.",
+    "What is the `<li>` tag in HTML?": "The `<li>` tag is used to define list items, and it can be used inside `<ul>`, `<ol>`, or `<menu>` tags.",
+    "What does the `<form>` tag do in HTML?": "The `<form>` tag is used to create an HTML form where users can enter data, such as text fields, checkboxes, and submit buttons.",
+    "What is the `<input>` tag in HTML?": "The `<input>` tag is used to create interactive controls in a form, such as text fields, checkboxes, and buttons. It requires the `type` attribute to define the input type.",
+    "What is the `<button>` tag in HTML?": "The `<button>` tag is used to create clickable buttons in a form or webpage, and it can trigger JavaScript functions.",
+    "What is the `<select>` tag in HTML?": "The `<select>` tag is used to create a dropdown menu, allowing users to choose one or more options from a list of `<option>` tags.",
+    "What is the `<textarea>` tag in HTML?": "The `<textarea>` tag is used to create a multiline text input field, allowing users to enter larger amounts of text.",
+    "What is the `<table>` tag in HTML?": "The `<table>` tag is used to create a table on a webpage, with rows defined by `<tr>` and columns defined by `<td>` or `<th>`.",
+    "What is the `<tr>` tag in HTML?": "The `<tr>` tag is used to define a row in a table. It contains `<td>` (table data) or `<th>` (table header) elements.",
+    "What is the `<th>` tag in HTML?": "The `<th>` tag is used to define a header cell in a table. It is typically bold and centered by default.",
+    "What is the `<td>` tag in HTML?": "The `<td>` tag is used to define a standard cell in a table, containing data or text.",
+    "What is the `<header>` tag in HTML?": "The `<header>` tag represents the introductory content or navigation of a page or section, typically containing headings and logos.",
+    "What is the `<footer>` tag in HTML?": "The `<footer>` tag represents the footer of a document or section, often containing information like copyright, contact info, or links.",
+    "What is the `<section>` tag in HTML?": "The `<section>` tag is used to define a section in a document, typically with a heading and related content.",
+    "What is the `<article>` tag in HTML?": "The `<article>` tag is used to define independent, self-contained content, such as blog posts or news articles.",
+    "What is the `<nav>` tag in HTML?": "The `<nav>` tag is used to define navigation links on a webpage, typically in menus or lists.",
+    "What is the `<main>` tag in HTML?": "The `<main>` tag represents the main content of a document, excluding things like headers, footers, and sidebars.",
+    "What is the `<aside>` tag in HTML?": "The `<aside>` tag is used for content that is tangentially related to the main content, like sidebars or advertisements.",
+    "What is the `<iframe>` tag in HTML?": "The `<iframe>` tag is used to embed another HTML page or document inside the current page, creating a window within the page.",
+    "What is the `href` attribute in HTML?": "The `href` attribute in the `<a>` tag specifies the destination URL for a hyperlink.",
+    "What is the `src` attribute in HTML?": "The `src` attribute specifies the source file for media elements, such as images, audio, or video.",
+    "What is the `alt` attribute in HTML?": "The `alt` attribute provides alternative text for images and is displayed if the image cannot be loaded. It is also helpful for screen readers.",
+    "What is the `target` attribute in HTML?": "The `target` attribute in the `<a>` tag specifies where the linked document will open, such as in a new tab or the same window.",
+    "What is the `id` attribute in HTML?": "The `id` attribute is used to uniquely identify an HTML element, allowing it to be styled or manipulated using JavaScript.",
+    "What is the `class` attribute in HTML?": "The `class` attribute is used to group multiple elements together for styling or JavaScript purposes, allowing you to apply the same styles to many elements.",
+    "What is the `style` attribute in HTML?": "The `style` attribute allows you to apply inline CSS styles directly to an HTML element, such as setting the color, font-size, or margin.",
+    "What is the `lang` attribute in HTML?": "The `lang` attribute is used to specify the language of the content within an HTML document or element, helping with accessibility and search engine optimization.",
+    "What is the `meta` tag in HTML?": "The `<meta>` tag provides metadata about the HTML document, such as character encoding, author, or viewport settings, and is placed in the `<head>` section.",
+    "What is the `charset` attribute in HTML?": "The `charset` attribute in the `<meta>` tag specifies the character encoding for the document, such as UTF-8.",
+    "What is the `viewport` meta tag in HTML?": "The `viewport` meta tag controls the layout on mobile devices, allowing you to adjust the scale and dimensions of the page for better responsiveness.",
+    "What is the `form` attribute in HTML?": "The `form` attribute allows elements like `<input>`, `<select>`, and `<textarea>` to be associated with a specific form, enabling form submission.",
+    "What is the `action` attribute in HTML?": "The `action` attribute in the `<form>` tag specifies the URL to which form data will be submitted when the form is submitted.",
+    "What is the `method` attribute in HTML?": "The `method` attribute in the `<form>` tag specifies how form data will be sent to the server, with options like `GET` or `POST`.",
+    "What is the `name` attribute in HTML?": "The `name` attribute is used to assign a name to form elements like input fields, allowing them to be referenced when submitting the form data.",
+    "What is HTML?": "HTML is the language we use to create webpages. It tells a browser how to display content like text, images, and links.",
+    "How does HTML help build a webpage?": "HTML provides the structure of the webpage. It's like the skeleton of the page, telling the browser where each element goes.",
+    "What is an element in HTML?": "An element in HTML is a part of a webpage, like a paragraph, an image, or a link. Elements are wrapped in tags, like `<p>` or `<img>`.",
+    "Why do we need HTML tags?": "HTML tags are used to label content, telling the browser how to display it. For example, `<h1>` is used for main headings, and `<p>` is for paragraphs.",
+    "What is the `<head>` tag used for?": "The `<head>` tag contains important information about the page, like the title, links to stylesheets, and meta information. It’s not visible to users.",
+    "Why should we use the `<body>` tag?": "The `<body>` tag holds the main content that users see on the webpage, such as text, images, and links.",
+    "What’s the difference between `<div>` and `<span>` tags?": "A `<div>` is used to group large blocks of content, while a `<span>` is used for smaller inline content, like a piece of text or a link.",
+    "What’s the `<a>` tag used for?": "The `<a>` tag creates links to other pages or sections on a webpage. You can use it to link to other websites or navigate through a page.",
+    "What does the `href` attribute do in an `<a>` tag?": "The `href` attribute in the `<a>` tag tells the browser where to go when the link is clicked. It specifies the URL or location.",
+    "What is an image tag in HTML?": "The `<img>` tag is used to display images on a webpage. It requires a `src` attribute to specify the image’s location.",
+    "How do you link to another page in HTML?": "You can link to another page by using the `<a>` tag with an `href` attribute. For example: `<a href='page2.html'>Go to Page 2</a>`.",
+    "What is the `<img>` tag's `alt` attribute for?": "The `alt` attribute describes the image if it can’t be displayed. It’s important for accessibility, helping screen readers understand the content.",
+    "How can you create a list in HTML?": "To create a list, you can use either `<ul>` for an unordered list (bulleted) or `<ol>` for an ordered list (numbered), with list items inside `<li>` tags.",
+    "What is a form in HTML?": "A form is a way to collect data from users. It uses `<form>`, `<input>`, `<textarea>`, and other tags to let users enter and submit information.",
+    "What does the `<input>` tag do in HTML?": "The `<input>` tag is used to create various types of interactive controls, like text fields, checkboxes, and buttons, in forms.",
+    "What’s the difference between `<input type='text'>` and `<input type='password'>`?": "`<input type='text'>` creates a regular text box, while `<input type='password'>` hides the text entered, typically used for passwords.",
+    "How do you create a button in HTML?": "To create a button, use the `<button>` tag. It can perform actions, like submitting a form or triggering a JavaScript function.",
+    "What’s the `<select>` tag used for?": "The `<select>` tag creates a dropdown list, letting users choose from a list of options.",
+    "What is the `<textarea>` tag used for?": "The `<textarea>` tag creates a multiline text box, allowing users to type longer text, like comments or messages.",
+    "What’s the `<table>` tag used for?": "The `<table>` tag creates a table. It organizes data into rows and columns using `<tr>`, `<th>`, and `<td>` tags.",
+    "What’s the `<th>` tag in a table?": "The `<th>` tag is used to define table headers. They’re typically bold and centered to label each column in the table.",
+    "How do you make a clickable link in HTML?": "To create a clickable link, use the `<a>` tag with the `href` attribute, like this: `<a href='https://example.com'>Click me</a>`.",
+    "What is a block-level element in HTML?": "Block-level elements take up the full width of their container and start on a new line, like `<div>`, `<p>`, or `<h1>`.",
+    "What is an inline element in HTML?": "Inline elements only take up as much width as they need and don’t force a line break, like `<span>`, `<a>`, or `<img>`.",
+    "How do you add a style to an HTML element?": "You can add style directly to an element using the `style` attribute, like this: `<p style='color: red;'>This is red text.</p>`.",
+    "What’s the `<meta>` tag used for in HTML?": "The `<meta>` tag provides extra information about the page, like the character encoding or the author’s name. It’s placed inside the `<head>` tag.",
+    "Why is the `<head>` section important in HTML?": "The `<head>` section contains meta-information about the webpage that helps browsers and search engines understand and display your page correctly.",
+    "What’s the difference between a `<div>` and a `<section>` tag in HTML?": "A `<div>` is a general container for grouping content, while a `<section>` is used to define a specific part of the page with related content.",
+    "What is the `<footer>` tag used for in HTML?": "The `<footer>` tag defines the footer of a page or section, where you can include information like copyright, contact details, or links.",
+    "How do you add a comment in HTML?": "To add a comment in HTML, use `<!--` to start the comment and `-->` to end it. For example: `<!-- This is a comment -->`.",
+    "What is an `id` attribute in HTML?": "The `id` attribute uniquely identifies an element on a page. It’s helpful for styling or linking to a specific section.",
+    "How do you make text bold in HTML?": "To make text bold, use the `<b>` or `<strong>` tag. `<strong>` also adds semantic meaning, indicating that the text is important.",
+    "How do you italicize text in HTML?": "To italicize text, use the `<i>` or `<em>` tag. `<em>` also gives the text emphasis, which is important for accessibility.",
+    "What is the `<strong>` tag in HTML?": "The `<strong>` tag makes text bold and emphasizes its importance. It also has a semantic meaning, telling browsers that the text should be highlighted.",
+    "What is the `<em>` tag in HTML?": "The `<em>` tag emphasizes text, which typically renders as italicized, and has a semantic meaning of indicating importance or stress.",
+    "How do you create an image link in HTML?": "To create an image link, wrap an `<img>` tag inside an `<a>` tag. For example: `<a href='https://example.com'><img src='image.jpg' alt='Link'></a>`.",
+
+    "What is HTML?": {
+        "english": "HTML (Hypertext Markup Language) is the standard language for creating and structuring content on the web, such as text, images, and links.",
+        "tamil": "HTML (ஹைப்பர் டெக்ஸ்ட் மார்க் மொழி) என்பது வலைப்பக்கங்களில் உள்ளடக்கத்தை உருவாக்க மற்றும் வடிவமைப்பதற்கான பொதுவான மொழி, இது உரை, படங்கள் மற்றும் இணைப்புகளை உள்ளடக்குகிறது."
+    },
+    "How does HTML help build a webpage?": {
+        "english": "HTML provides the structure of the webpage. It's like the skeleton of the page, telling the browser where each element goes.",
+        "tamil": "HTML வலைப்பக்கத்தின் கட்டமைப்பை வழங்குகிறது. இது பக்கத்தின் எலிமென்டுகள் எங்கு செல்ல வேண்டும் என்பதை சொல்லும் எலும்புச்சுவடு போல் உள்ளது."
+    },
+    "What is an element in HTML?": {
+        "english": "An element in HTML is a part of a webpage, like a paragraph, an image, or a link. Elements are wrapped in tags, like `<p>` or `<img>`.",
+        "tamil": "HTML-இல் ஒரு எலிமென்ட் என்பது ஒரு வலைப்பக்கத்தின் பகுதி, ஒரு பத்தி, படம் அல்லது இணைப்பை போன்றவை. எலிமென்டுகள் குறியீடுகளில் உருட்டப்பட்டுள்ளது, உதாரணமாக `<p>` அல்லது `<img>`."
+    },
+    "Why do we need HTML tags?": {
+        "english": "HTML tags are used to label content, telling the browser how to display it. For example, `<h1>` is used for main headings, and `<p>` is for paragraphs.",
+        "tamil": "HTML குறியீடுகள் உள்ளடக்கத்தை அடையாளம் காட்ட பயன்படுத்தப்படுகின்றன, அது எவ்வாறு காட்டப்பட வேண்டும் என்பதை உலாவியுடன் கூறுகின்றன. உதாரணமாக, `<h1>` முக்கிய தலைப்புகளுக்காக பயன்படுத்தப்படுகிறது, மற்றும் `<p>` பத்திகளுக்காக."
+    },
+    "What is the `<head>` tag used for?": {
+        "english": "The `<head>` tag contains important information about the page, like the title, links to stylesheets, and meta information. It’s not visible to users.",
+        "tamil": " `<head>` குறியீடு பக்கத்தின் முக்கியமான தகவல்களை கொண்டுள்ளது, தலைப்பு, ஸ்டைல்ஷீட்டுகளுக்கான இணைப்புகள் மற்றும் மெட்டா தகவல்களைப் போல. இது பயனர்களுக்கு காட்சியளிக்கப்படவில்லை."
+    },
+    "Why should we use the `<body>` tag?": {
+        "english": "The `<body>` tag holds the main content that users see on the webpage, such as text, images, and links.",
+        "tamil": " `<body>` குறியீடு பயனர்கள் வலைப்பக்கத்தில் பார்க்கும் முக்கிய உள்ளடக்கத்தை கொண்டுள்ளது, உதாரணமாக உரை, படங்கள் மற்றும் இணைப்புகள்."
+    },
+    "What’s the difference between `<div>` and `<span>` tags?": {
+        "english": "A `<div>` is used to group large blocks of content, while a `<span>` is used for smaller inline content, like a piece of text or a link.",
+        "tamil": " `<div>` குறியீடு பெரிய உள்ளடக்கப் பகுதிகளை குழுவாக்க பயன்படுத்தப்படுகிறது, `<span>` குறியீடு சிறிய உள்ளமைக்கப்பட்ட உள்ளடக்கத்திற்காக, உதாரணமாக ஒரு உரை அல்லது இணைப்பு."
+    },
+    "What’s the `<a>` tag used for?": {
+        "english": "The `<a>` tag creates links to other pages or sections on a webpage. You can use it to link to other websites or navigate through a page.",
+        "tamil": " `<a>` குறியீடு மற்ற பக்கங்கள் அல்லது பக்கங்களில் உள்ள பிரிவுகளுக்கான இணைப்புகளை உருவாக்குகிறது. நீங்கள் அதை பயன்படுத்தி மற்ற வலைத்தளங்களை இணைக்க அல்லது பக்கத்தில் வழிசெலுத்த முடியும்."
+    },
+    "What does the `href` attribute do in an `<a>` tag?": {
+        "english": "The `href` attribute in the `<a>` tag tells the browser where to go when the link is clicked. It specifies the URL or location.",
+        "tamil": " `<a>` குறியீட்டில் உள்ள `href` பண்புக்குறி இணைப்பை கிளிக் செய்தபோது உலாவியிடம் செல்ல எங்கு செல்ல வேண்டும் என்பதை சொல்லுகிறது. இது URL அல்லது இடத்தை குறிப்பிடுகிறது."
+    },
+    "What is an image tag in HTML?": {
+        "english": "The `<img>` tag is used to display images on a webpage. It requires a `src` attribute to specify the image’s location.",
+        "tamil": " `<img>` குறியீடு வலைப்பக்கத்தில் படங்களை காண்பிக்க பயன்படுத்தப்படுகிறது. படத்தின் இடத்தை குறிப்பிட `src` பண்புக்குறி தேவை."
+    },
+    "How do you link to another page in HTML?": {
+        "english": "You can link to another page by using the `<a>` tag with an `href` attribute. For example: `<a href='page2.html'>Go to Page 2</a>`.",
+        "tamil": " நீங்கள் மற்றொரு பக்கத்துக்கு இணைக்க `href` பண்புக்குறியுடன் `<a>` குறியீட்டை பயன்படுத்தலாம். உதாரணமாக: `<a href='page2.html'>பக்கம் 2-க்கு செல்லவும்</a>`."
+    },
+    "What is the `<img>` tag's `alt` attribute for?": {
+        "english": "The `alt` attribute describes the image if it can’t be displayed. It’s important for accessibility, helping screen readers understand the content.",
+        "tamil": " `alt` பண்புக்குறி படம் காண்பிக்கப்படாதபோது அதன் விவரத்தை வழங்குகிறது. இது அணுகலுக்கு முக்கியமானது, screen reader-களை உள்ளடக்கம் புரிந்துகொள்ள உதவுகிறது."
+    },
+    "How can you create a list in HTML?": {
+        "english": "To create a list, you can use either `<ul>` for an unordered list (bulleted) or `<ol>` for an ordered list (numbered), with list items inside `<li>` tags.",
+        "tamil": " ஒரு பட்டியலை உருவாக்க, நீங்கள் `<ul>` (வகைப்படுத்தப்படாத பட்டியல்) அல்லது `<ol>` (வகைப்படுத்தப்பட்ட பட்டியல்) பயன்படுத்தலாம், பட்டியலின் உருப்படிகள் `<li>` குறியீடுகளுக்குள்."
+    },
+    "What is a form in HTML?": {
+        "english": "A form is a way to collect data from users. It uses `<form>`, `<input>`, `<textarea>`, and other tags to let users enter and submit information.",
+        "tamil": " ஒரு படிவம் என்பது பயனர்களிடமிருந்து தரவுகளை சேகரிப்பதற்கான வழி. இது `<form>`, `<input>`, `<textarea>` மற்றும் மற்ற குறியீடுகளை பயன்படுத்தி பயனர்களுக்கு தகவல்களை உள்ளிட மற்றும் சமர்ப்பிக்க அனுமதிக்கிறது."
+    },
+    "What does the `<input>` tag do in HTML?": {
+        "english": "The `<input>` tag is used to create various types of interactive controls, like text fields, checkboxes, and buttons, in forms.",
+        "tamil": " `<input>` குறியீடு படிவங்களில் உரைப் பெட்டிகள், சின்னக் குறிப்புகள் மற்றும் பொத்தான்கள் போன்ற பலவகையான பரிமாற்றக் கட்டளைகளை உருவாக்க பயன்படுத்தப்படுகிறது."
+    },
+    "What’s the difference between `<input type='text'>` and `<input type='password'>`?": {
+        "english": "`<input type='text'>` creates a regular text box, while `<input type='password'>` hides the text entered, typically used for passwords.",
+        "tamil": "`<input type='text'>` ஒரு சாதாரண உரை பெட்டியை உருவாக்குகிறது, `<input type='password'>` உள்ளீட்டுப் படத்தில் உள்ள உரையை மறைக்கிறது, பொதுவாக கடவுச்சொற்களுக்கு பயன்படுத்தப்படுகிறது."
+    },
+    "How do you create a button in HTML?": {
+        "english": "To create a button, use the `<button>` tag. It can perform actions, like submitting a form or triggering a JavaScript function.",
+        "tamil": " ஒரு பொத்தானை உருவாக்க, `<button>` குறியீட்டை பயன்படுத்தவும். இது படிவத்தை சமர்ப்பிப்பது அல்லது JavaScript செயல்பாட்டை தூண்டுவது போன்ற செயல்களைச் செய்யலாம்."
+    },
+    "What’s the `<select>` tag used for?": {
+        "english": "The `<select>` tag creates a dropdown list, letting users choose from a list of options.",
+        "tamil": " `<select>` குறியீடு ஒரு பட்டியலில் இருந்து பயனர்கள் தேர்வு செய்யக் கூடிய விருப்பங்களை கொண்ட ஒரு ட்ராப்டவுன் பட்டியலை உருவாக்குகிறது."
+    },
+    "What is the `<textarea>` tag used for?": {
+        "english": "The `<textarea>` tag creates a multiline text box, allowing users to type longer text, like comments or messages.",
+        "tamil": " `<textarea>` குறியீடு பல வரிகளைக் கொண்ட உரை பெட்டியை உருவாக்குகிறது, பயனர்களுக்கு நீண்ட உரைகளை, கருத்துகள் அல்லது செய்திகள் போன்றவை, உள்ளிட அனுமதிக்கிறது."
+    }
+,
+//Names 
+    "What is your name, Aarav?": "Hello! How can I assist you today?",
+    "What is your name, Aryan?": "Hello! How can I assist you today?",
+    "What is your name, Vir?": "Hello! How can I assist you today?",
+    "What is your name, Rahul?": "Hello! How can I assist you today?",
+    "What is your name, Arjun?": "Hello! How can I assist you today?",
+    "What is your name, Rohan?": "Hello! How can I assist you today?",
+    "What is your name, Vikram?": "Hello! How can I assist you today?",
+    "What is your name, Siddharth?": "Hello! How can I assist you today?",
+    "What is your name, Karan?": "Hello! How can I assist you today?",
+    "What is your name, Aniket?": "Hello! How can I assist you today?",
+    "What is your name, Aditya?": "Hello! How can I assist you today?",
+    "What is your name, Ravi?": "Hello! How can I assist you today?",
+    "What is your name, Rajesh?": "Hello! How can I assist you today?",
+    "What is your name, Sanjay?": "Hello! How can I assist you today?",
+    "What is your name, Prem?": "Hello! How can I assist you today?",
+    "What is your name, Harish?": "Hello! How can I assist you today?",
+    "What is your name, Sameer?": "Hello! How can I assist you today?",
+    "What is your name, Nikhil?": "Hello! How can I assist you today?",
+    "What is your name, Pranav?": "Hello! How can I assist you today?",
+    "What is your name, Vikas?": "Hello! How can I assist you today?",
+    "What is your name, Priya?": "Hello! How can I assist you today?",
+    "What is your name, Ananya?": "Hello! How can I assist you today?",
+    "What is your name, Aishwarya?": "Hello! How can I assist you today?",
+    "What is your name, Pooja?": "Hello! How can I assist you today?",
+    "What is your name, Sanya?": "Hello! How can I assist you today?",
+    "What is your name, Neha?": "Hello! How can I assist you today?",
+    "What is your name, Riya?": "Hello! How can I assist you today?",
+    "What is your name, Shruti?": "Hello! How can I assist you today?",
+    "What is your name, Shreya?": "Hello! How can I assist you today?",
+    "What is your name, Sita?": "Hello! How can I assist you today?",
+    "What is your name, Lakshmi?": "Hello! How can I assist you today?",
+    "What is your name, Komal?": "Hello! How can I assist you today?",
+    "What is your name, Divya?": "Hello! How can I assist you today?",
+    "What is your name, Meera?": "Hello! How can I assist you today?",
+    "What is your name, Simran?": "Hello! How can I assist you today?",
+    "What is your name, Radhika?": "Hello! How can I assist you today?",
+    "What is your name, Isha?": "Hello! How can I assist you today?",
+    "What is your name, Sneha?": "Hello! How can I assist you today?",
+    "What is your name, Vidya?": "Hello! How can I assist you today?",
+    "What is your name, Nisha?": "Hello! How can I assist you today?",
+    "What is your name, Arya?": "Hello! How can I assist you today?",
+    "What is your name, Krishna?": "Hello! How can I assist you today?",
+    "What is your name, Devi?": "Hello! How can I assist you today?",
+    "What is your name, Guru?": "Hello! How can I assist you today?",
+    "What is your name, Kiran?": "Hello! How can I assist you today?",
+    "What is your name, Raj?": "Hello! How can I assist you today?",
+    "What is your name, Neel?": "Hello! How can I assist you today?",
+    "What is your name, Shiv?": "Hello! How can I assist you today?",
+    "What is your name, Charul?": "Hello! How can I assist you today?",
+    "What is your name, Aadi?": "Hello! How can I assist you today?",
+    "What is your name, Karthik?": "Hello! How can I assist you today?",
+    "What is your name, Ravi?": "Hello! How can I assist you today?",
+    "What is your name, Prakash?": "Hello! How can I assist you today?",
+    "What is your name, Anjali?": "Hello! How can I assist you today?",
+    "What is your name, Shruti?": "Hello! How can I assist you today?",
+    "What is your name, Swathi?": "Hello! How can I assist you today?",
+    "What is your name, Rajeshwari?": "Hello! How can I assist you today?",
+    "What is your name, Surya?": "Hello! How can I assist you today?",
+    "What is your name, Venkatesh?": "Hello! How can I assist you today?",
+    "What is your name, Divya?": "Hello! How can I assist you today?",
+    "What is your name, Arvind?": "Hello! How can I assist you today?",
+    "What is your name, Aman?": "Hello! How can I assist you today?",
+    "What is your name, Ramesh?": "Hello! How can I assist you today?",
+    "What is your name, Neelam?": "Hello! How can I assist you today?",
+    "What is your name, Nisha?": "Hello! How can I assist you today?",
+    "What is your name, Sanjeev?": "Hello! How can I assist you today?",
+    "What is your name, Simran?": "Hello! How can I assist you today?",
+    "What is your name, Rajendra?": "Hello! How can I assist you today?",
+    "What is your name, Manpreet?": "Hello! How can I assist you today?",
+    "What is your name, Sheetal?": "Hello! How can I assist you today?",
+    "What is your name, Prathamesh?": "Hello! How can I assist you today?",
+    "What is your name, Bhakti?": "Hello! How can I assist you today?",
+    "What is your name, Anuja?": "Hello! How can I assist you today?",
+    "What is your name, Ashwini?": "Hello! How can I assist you today?",
+    "What is your name, Vaidehi?": "Hello! How can I assist you today?",
+    "What is your name, Ruturaj?": "Hello! How can I assist you today?",
+    "What is your name, Abhay?": "Hello! How can I assist you today?",
+    "What is your name, Nilesh?": "Hello! How can I assist you today?",
+    "What is your name, Tejas?": "Hello! How can I assist you today?",
+    "What is your name, Aishwarya?": "Hello! How can I assist you today?",
+    "What is your name, Gurpreet?": "Hello! How can I assist you today?",
+    "What is your name, Harmeet?": "Hello! How can I assist you today?",
+    "What is your name, Rajveer?": "Hello! How can I assist you today?",
+    "What is your name, Simranjeet?": "Hello! How can I assist you today?",
+    "What is your name, Jaspreet?": "Hello! How can I assist you today?",
+    "What is your name, Sukhdeep?": "Hello! How can I assist you today?",
+    "What is your name, Paramjit?": "Hello! How can I assist you today?",
+    "What is your name, Manpreet?": "Hello! How can I assist you today?",
+    "What is your name, Harman?": "Hello! How can I assist you today?",
+    "What is your name, Amrit?": "Hello! How can I assist you today?",
+    "What is your name, Ibrahim?": "Hello! How can I assist you today?",
+    "What is your name, Sameer?": "Hello! How can I assist you today?",
+    "What is your name, Fatima?": "Hello! How can I assist you today?",
+    "What is your name, Ayesha?": "Hello! How can I assist you today?",
+    "What is your name, Zoya?": "Hello! How can I assist you today?",
+    "What is your name, Noor?": "Hello! How can I assist you today?",
+    "What is your name, Ali?": "Hello! How can I assist you today?",
+    "What is your name, Hana?": "Hello! How can I assist you today?",
+
+    // CSS Questions
+    "What is CSS?": "CSS (Cascading Style Sheets) is used to style HTML elements. It controls the look and feel of the webpage, such as color, fonts, layout, etc.",
+    "What are CSS selectors?": "CSS selectors are patterns used to select the HTML elements you want to style. Examples include element selectors (`h1`), class selectors (`.class-name`), and ID selectors (`#id-name`).",
+    "What is the difference between `class` and `id` selectors in CSS?": "A `class` can be used multiple times on a page, whereas an `id` should be unique to each element.",
+    "What is the box model in CSS?": "The CSS box model defines how the elements' content, padding, border, and margin are structured. It determines the element's total width and height.",
+    "What is Flexbox in CSS?": "Flexbox is a layout model in CSS that allows you to design complex layouts using flexible containers and their items, even when their sizes are unknown or dynamic.",
+    "What is CSS?": "CSS (Cascading Style Sheets) is used to style HTML elements. It controls the look and feel of the webpage, such as color, fonts, layout, etc.",
+    "What are CSS selectors?": "CSS selectors are patterns used to select the HTML elements you want to style. Examples include element selectors (`h1`), class selectors (`.class-name`), and ID selectors (`#id-name`).",
+    "What is the difference between `class` and `id` selectors in CSS?": "A `class` can be used multiple times on a page, whereas an `id` should be unique to each element.",
+    "What is the box model in CSS?": "The CSS box model defines how the elements' content, padding, border, and margin are structured. It determines the element's total width and height.",
+    "What is Flexbox in CSS?": "Flexbox is a layout model in CSS that allows you to design complex layouts using flexible containers and their items, even when their sizes are unknown or dynamic.",
+    "What is the purpose of the `float` property in CSS?": "The `float` property is used to float an element to the left or right within its container, allowing other content to wrap around it.",
+    "What is the `clear` property in CSS?": "The `clear` property is used to control the behavior of elements after a floated element. It can be set to `left`, `right`, `both`, or `none`.",
+    "What is the `position` property in CSS?": "The `position` property specifies how an element is positioned in a document. Values include `static`, `relative`, `absolute`, `fixed`, and `sticky`.",
+    "What is the difference between `absolute` and `relative` positioning in CSS?": "Elements with `absolute` positioning are positioned relative to the nearest positioned ancestor, while elements with `relative` positioning are positioned relative to their normal position.",
+    "What is the `z-index` property in CSS?": "The `z-index` property controls the stacking order of elements. Higher values are stacked in front of lower values.",
+    "What is the `display` property in CSS?": "The `display` property specifies the type of rendering box for an element. Common values include `block`, `inline`, `inline-block`, `none`, etc.",
+    "What is the `block` value for the `display` property?": "The `block` value makes an element a block-level element, meaning it takes up the full width available and starts on a new line.",
+    "What is the `inline` value for the `display` property?": "The `inline` value makes an element an inline element, meaning it only takes up as much width as necessary and does not break onto a new line.",
+    "What is the `inline-block` value for the `display` property?": "The `inline-block` value combines the characteristics of both `inline` and `block` elements. It allows elements to be placed next to each other while retaining block-like formatting.",
+    "What does the `none` value of the `display` property do?": "The `none` value completely removes an element from the document layout, making it invisible and not occupy any space.",
+    "What is the `visibility` property in CSS?": "The `visibility` property controls the visibility of an element without affecting its layout. Values include `visible`, `hidden`, and `collapse`.",
+    "What is the `opacity` property in CSS?": "The `opacity` property controls the transparency of an element. It accepts values from `0` (fully transparent) to `1` (fully opaque).",
+    "What is the `overflow` property in CSS?": "The `overflow` property determines how content is handled when it overflows an element’s box. It can be set to `visible`, `hidden`, `scroll`, or `auto`.",
+    "What is the `width` property in CSS?": "The `width` property specifies the width of an element, excluding its margin, padding, and border.",
+    "What is the `height` property in CSS?": "The `height` property specifies the height of an element, excluding its margin, padding, and border.",
+    "What is the `margin` property in CSS?": "The `margin` property defines the space outside the border of an element. It creates separation between elements.",
+    "What is the `padding` property in CSS?": "The `padding` property defines the space between the content of an element and its border.",
+    "What is the `border` property in CSS?": "The `border` property is used to set the width, style, and color of the border around an element.",
+    "What is the `border-radius` property in CSS?": "The `border-radius` property is used to create rounded corners on elements by specifying the radius of the corners.",
+    "What is the `box-shadow` property in CSS?": "The `box-shadow` property adds shadow effects around an element’s frame. It can include horizontal and vertical offsets, blur radius, spread radius, and color.",
+    "What is the `text-shadow` property in CSS?": "The `text-shadow` property adds shadow effects to text, specified by horizontal and vertical offsets, blur radius, and color.",
+    "What is the `font-family` property in CSS?": "The `font-family` property specifies the font type for text within an element.",
+    "What is the `font-size` property in CSS?": "The `font-size` property defines the size of the font for text within an element.",
+    "What is the `font-weight` property in CSS?": "The `font-weight` property specifies the thickness of the font characters, with values like `normal`, `bold`, `bolder`, and `lighter`.",
+    "What is the `font-style` property in CSS?": "The `font-style` property specifies whether the font should be normal, italic, or oblique.",
+    "What is the `line-height` property in CSS?": "The `line-height` property controls the amount of space between lines of text in a paragraph.",
+    "What is the `text-align` property in CSS?": "The `text-align` property sets the horizontal alignment of text within an element. Common values include `left`, `right`, `center`, and `justify`.",
+    "What is the `text-transform` property in CSS?": "The `text-transform` property controls the capitalization of text, with values like `uppercase`, `lowercase`, `capitalize`, and `none`.",
+    "What is the `letter-spacing` property in CSS?": "The `letter-spacing` property controls the space between characters in text.",
+    "What is the `word-spacing` property in CSS?": "The `word-spacing` property controls the space between words in text.",
+    "What is the `text-indent` property in CSS?": "The `text-indent` property specifies the indentation of the first line of text in a block element.",
+    "What is the `white-space` property in CSS?": "The `white-space` property controls how whitespace inside an element is handled, such as whether it should wrap or remain on a single line.",
+    "What is the `cursor` property in CSS?": "The `cursor` property sets the type of cursor to be displayed when hovering over an element. Values include `pointer`, `default`, `wait`, and `crosshair`.",
+    "What is the `list-style` property in CSS?": "The `list-style` property is used to control the appearance of list items, including the marker style (e.g., `disc`, `circle`, or `none`).",
+    "What is the `display: flex` property in CSS?": "The `display: flex` property creates a flex container, allowing child elements to align and distribute space dynamically along the main axis and cross axis.",
+    "What is the `justify-content` property in CSS?": "The `justify-content` property aligns the items along the main axis in a flex container. Common values are `flex-start`, `flex-end`, `center`, `space-between`, and `space-around`.",
+    "What is the `align-items` property in CSS?": "The `align-items` property aligns items along the cross axis in a flex container. Values include `flex-start`, `flex-end`, `center`, `stretch`, and `baseline`.",
+    "What is the `align-self` property in CSS?": "The `align-self` property allows individual flex items to override the `align-items` value for custom alignment along the cross axis.",
+    "What is the `flex-wrap` property in CSS?": "The `flex-wrap` property controls whether flex items should wrap onto multiple lines in a flex container. Values are `nowrap`, `wrap`, and `wrap-reverse`.",
+    "What is the `order` property in CSS?": "The `order` property defines the order in which flex items appear in a flex container, with the default value being `0`.",
+    "What is the `flex-grow` property in CSS?": "The `flex-grow` property defines how a flex item should grow relative to other items within the container when there is extra space.",
+    "What is the `flex-shrink` property in CSS?": "The `flex-shrink` property defines how a flex item should shrink relative to other items in the container when there is not enough space.",
+    "What is the `flex-basis` property in CSS?": "The `flex-basis` property defines the initial size of a flex item before space distribution takes place.",
+    "What is the `flex` shorthand property in CSS?": "The `flex` shorthand property is a combination of `flex-grow`, `flex-shrink`, and `flex-basis`, allowing you to define all three values in one declaration.",
+    "What is the `grid` layout in CSS?": "CSS Grid Layout is a two-dimensional layout system that allows you to create complex layouts using rows and columns, with grid containers and grid items.",
+    "What is the `grid-template-columns` property in CSS?": "The `grid-template-columns` property defines the column structure of a grid container, specifying the number and size of columns.",
+    "What is the `grid-template-rows` property in CSS?": "The `grid-template-rows` property defines the row structure of a grid container, specifying the number and size of rows.",
+    "What is the `grid-template-areas` property in CSS?": "The `grid-template-areas` property allows you to define a grid layout using named areas for each grid item.",
+    "What is the `grid-column` property in CSS?": "The `grid-column` property specifies how many columns an element should span in a grid layout.",
+    "What is the `grid-row` property in CSS?": "The `grid-row` property specifies how many rows an element should span in a grid layout.",
+    "What is the `gap` property in CSS?": "The `gap` property defines the space between grid rows and columns, or between flex items, allowing for spacing control between elements.",
+    "What is the `minmax` function in CSS Grid?": "The `minmax` function defines a range for a grid track’s size, specifying a minimum and maximum value for the track's width or height.",
+    "What is the `auto-fill` value in CSS Grid?": "The `auto-fill` value automatically fills the available space with as many columns or rows as will fit, based on the size of the grid items.",
+    "What is the `auto-fit` value in CSS Grid?": "The `auto-fit` value behaves similarly to `auto-fill`, but it allows grid items to stretch to fill any remaining space in the grid container.",
+    "What is the `position: sticky` property in CSS?": "The `position: sticky` property allows an element to act like a `relative` element until it reaches a defined threshold, after which it behaves like `fixed`.",
+    "What is the difference between `absolute` and `fixed` positioning in CSS?": "The `absolute` positioning is based on the nearest positioned ancestor, while `fixed` positioning keeps the element fixed relative to the viewport, even when the page is scrolled.",
+    "What is the `min-width` property in CSS?": "The `min-width` property specifies the minimum width of an element, ensuring that it cannot be smaller than the specified value.",
+    "What is the `max-width` property in CSS?": "The `max-width` property specifies the maximum width an element can have, ensuring that it cannot exceed the specified value.",
+    "What is the `min-height` property in CSS?": "The `min-height` property specifies the minimum height of an element, ensuring that it cannot be shorter than the specified value.",
+    "What is the `max-height` property in CSS?": "The `max-height` property specifies the maximum height an element can have, ensuring that it cannot exceed the specified value.",
+    "What does the `position: relative` property do in CSS?": "The `position: relative` property positions an element relative to its normal position, allowing you to offset it with `top`, `right`, `bottom`, and `left`.",
+    "What is the `flex` shorthand in CSS?": "The `flex` shorthand combines the `flex-grow`, `flex-shrink`, and `flex-basis` properties into one single line for easy flex item configuration.",
+    "What is the `@media` rule in CSS?": "The `@media` rule is used to define different styles for different screen sizes or devices. It is part of responsive design techniques.",
+    "What is a responsive web design?": "Responsive web design refers to an approach where web pages are designed to adjust and adapt to different screen sizes and devices using CSS media queries.",
+    "What is the `box-sizing` property in CSS?": "The `box-sizing` property defines how the total width and height of an element are calculated, including padding and border. The `border-box` value includes padding and border in the element's total size.",
+    "What is the `visibility: hidden` property in CSS?": "The `visibility: hidden` property makes an element invisible, but it still occupies space in the layout.",
+    "What is the `overflow-x` property in CSS?": "The `overflow-x` property controls how content overflows horizontally in an element, with values like `visible`, `hidden`, `scroll`, and `auto`.",
+    "What is the `overflow-y` property in CSS?": "The `overflow-y` property controls how content overflows vertically in an element, with values like `visible`, `hidden`, `scroll`, and `auto`.",
+    "What is the `position: sticky` property in CSS?": "The `position: sticky` property allows an element to remain fixed within its container when scrolling, until a specified position is reached.",
+    "What are the different `position` values in CSS?": "The possible values for the `position` property are `static`, `relative`, `absolute`, `fixed`, and `sticky`.",
+    "What is the `text-align: justify` property in CSS?": "The `text-align: justify` property spreads the text out to align with both the left and right edges of the container.",
+    "What is the `line-height` property in CSS?": "The `line-height` property specifies the amount of space between lines of text within a block of text.",
+    "What does the `color` property do in CSS?": "The `color` property in CSS is used to set the text color of an element.",
+    "What is the `background-color` property in CSS?": "The `background-color` property is used to set the background color of an element.",
+    "What is the `background-image` property in CSS?": "The `background-image` property is used to set an image as the background of an element.",
+    "What is the `background-size` property in CSS?": "The `background-size` property specifies the size of the background image, with values like `cover` or `contain`.",
+    "What is the `box-shadow` property in CSS?": "The `box-shadow` property adds shadow effects to elements, specifying horizontal and vertical offsets, blur radius, spread radius, and color.",
+    "What is the `text-shadow` property in CSS?": "The `text-shadow` property is used to add shadow effects to text, specifying horizontal and vertical offsets, blur radius, and color.",
+    "What is the `border-radius` property in CSS?": "The `border-radius` property is used to create rounded corners for elements, specified by the radius value.",
+    "What is the `cursor` property in CSS?": "The `cursor` property sets the type of cursor to be displayed when hovering over an element, like `pointer`, `default`, or `crosshair`.",
+    "What is the `list-style-type` property in CSS?": "The `list-style-type` property specifies the type of marker (bullet) for list items, with options like `disc`, `circle`, and `square`.",
+    "What is the `list-style-position` property in CSS?": "The `list-style-position` property defines whether the list item markers (bullets) appear inside or outside the list item’s content box.",
+    "What is the `flex-direction` property in CSS?": "The `flex-direction` property defines the direction in which the flex items are placed in the flex container, such as `row`, `column`, `row-reverse`, or `column-reverse`.",
+    "What is the `align-content` property in CSS?": "The `align-content` property controls the alignment of multiple rows or columns of flex items along the cross axis.",
+    "What is the `align-self` property in CSS?": "The `align-self` property allows individual flex items to override the `align-items` property for custom alignment along the cross axis.",
+    "What is the `grid-template-columns` property in CSS?": "The `grid-template-columns` property defines the number and size of columns in a grid layout.",
+    "What is the `grid-template-rows` property in CSS?": "The `grid-template-rows` property defines the number and size of rows in a grid layout.",
+    "What is the `grid-gap` property in CSS?": "The `grid-gap` property defines the space between rows and columns in a grid layout, commonly used with `grid-template-columns` and `grid-template-rows`.",
+    "What is the `grid-auto-rows` property in CSS?": "The `grid-auto-rows` property defines the size of rows in a grid that are created automatically when there are more items than defined rows.",
+    "What is the `grid-auto-columns` property in CSS?": "The `grid-auto-columns` property defines the size of columns in a grid that are created automatically when there are more items than defined columns.",
+    "What is the `grid-area` property in CSS?": "The `grid-area` property is used to specify the position of an item within a grid, either using grid line numbers or named grid areas.",
+    "What is the `grid-column` property in CSS?": "The `grid-column` property specifies how many columns an element should span in a grid layout.",
+    "What is the `grid-row` property in CSS?": "The `grid-row` property specifies how many rows an element should span in a grid layout.",
+    "What is the `minmax` function in CSS Grid?": "The `minmax` function allows you to set a range of minimum and maximum sizes for grid tracks (columns or rows).",
+    "What is the `auto-fill` function in CSS Grid?": "The `auto-fill` function automatically fills the available space with as many grid items as will fit, based on their size.",
+    "What is the `auto-fit` function in CSS Grid?": "The `auto-fit` function automatically fits as many grid items as possible into the available space, allowing them to expand or contract.",
+    "What is the `grid-template-areas` property in CSS?": "The `grid-template-areas` property allows you to define named areas for the grid and then place grid items into those areas.",
+    "What does `position: absolute` mean in CSS?": "The `position: absolute` property allows you to position an element relative to its nearest positioned ancestor or the initial containing block if no positioned ancestor is found.",
+    // JavaScript Questions
+    "What is JavaScript?": "JavaScript is a programming language that is primarily used for creating dynamic and interactive content on web pages.",
+    "What are the different types of variables in JavaScript?": "JavaScript has three types of variables: `var`, `let`, and `const`. `var` is function-scoped, while `let` and `const` are block-scoped.",
+    "What is the difference between `null` and `undefined` in JavaScript?": "`null` is an intentional assignment of no value, while `undefined` means a variable has been declared but not yet assigned a value.",
+    "What are JavaScript promises?": "A promise in JavaScript is an object representing the eventual completion or failure of an asynchronous operation.",
+    "What is the difference between `==` and `===` in JavaScript?": "`==` checks for equality of values, but `===` checks for equality of both value and type.",
+    "What is a function in JavaScript?": "A function in JavaScript is a block of reusable code that performs a specific task, which can be invoked by its name.",
+    "What is a callback function in JavaScript?": "A callback function is a function passed into another function as an argument, which is then executed after the completion of that function.",
+    "What is an arrow function in JavaScript?": "An arrow function is a shorter syntax for writing functions, introduced in ES6. It uses `=>` instead of the `function` keyword.",
+    "What are the differences between `let`, `var`, and `const`?": "`let` and `const` are block-scoped, while `var` is function-scoped. `let` allows reassignment, `const` does not.",
+    "What is hoisting in JavaScript?": "Hoisting is JavaScript's behavior of moving declarations to the top of their scope before code execution, but only for variable declarations and function declarations.",
+    "What is the difference between synchronous and asynchronous JavaScript?": "Synchronous code executes in sequence, blocking the next operation until the current one finishes, while asynchronous code allows other operations to run while waiting for a task to finish.",
+    "What is a closure in JavaScript?": "A closure is a function that retains access to its lexical scope, even when the function is executed outside of that scope.",
+    "What is a JavaScript object?": "A JavaScript object is a collection of properties, where each property is defined as a key-value pair.",
+    "What are the different data types in JavaScript?": "JavaScript has primitive data types: `string`, `number`, `boolean`, `null`, `undefined`, `symbol`, and `bigint`, as well as reference types like `object` and `array`.",
+    "What is an array in JavaScript?": "An array in JavaScript is an ordered list of values that can hold multiple items of any type.",
+    "What is the purpose of the `this` keyword in JavaScript?": "`this` refers to the context in which a function is executed, typically representing the object that owns the function or the global object.",
+    "What is the difference between `call()`, `apply()`, and `bind()` in JavaScript?": "`call()` and `apply()` are used to invoke a function with a specified `this` value, but `call()` takes arguments as a comma-separated list, while `apply()` takes arguments as an array. `bind()` creates a new function that can be invoked later with a specific `this` value.",
+    "What is an event in JavaScript?": "An event in JavaScript is an occurrence (such as a user action) that can be detected and responded to by the browser using event listeners.",
+    "What are event listeners in JavaScript?": "Event listeners are functions that listen for specific events and execute code when the event occurs, such as a `click` or `submit` event.",
+    "What is the `addEventListener()` method in JavaScript?": "The `addEventListener()` method is used to attach an event handler to an HTML element, so that when an event is triggered, the handler is executed.",
+    "What is JSON in JavaScript?": "JSON (JavaScript Object Notation) is a lightweight data-interchange format that is easy for humans to read and write, and easy for machines to parse and generate.",
+    "What is the difference between `JSON.parse()` and `JSON.stringify()` in JavaScript?": "`JSON.parse()` is used to convert a JSON string into a JavaScript object, while `JSON.stringify()` is used to convert a JavaScript object into a JSON string.",
+    "What is `localStorage` in JavaScript?": "`localStorage` is a type of web storage that allows data to be stored in the browser persistently across page reloads.",
+    "What is `sessionStorage` in JavaScript?": "`sessionStorage` is a type of web storage that allows data to be stored only for the duration of the page session. It is cleared when the browser or tab is closed.",
+    "What is the difference between `localStorage` and `sessionStorage` in JavaScript?": "`localStorage` persists data across sessions and page reloads, while `sessionStorage` only stores data for the duration of the session or until the tab is closed.",
+    "What is the `window` object in JavaScript?": "The `window` object represents the browser's window and provides methods and properties to interact with the browser's environment.",
+    "What is the `document` object in JavaScript?": "The `document` object represents the HTML document loaded in the browser and allows you to manipulate the content and structure of the page.",
+    "What is the `querySelector()` method in JavaScript?": "The `querySelector()` method returns the first element that matches a specified CSS selector, allowing you to easily access HTML elements in the DOM.",
+    "What is the `setTimeout()` function in JavaScript?": "The `setTimeout()` function allows you to execute a function after a specified delay, in milliseconds.",
+    "What is the `setInterval()` function in JavaScript?": "The `setInterval()` function repeatedly executes a function at specified intervals, in milliseconds.",
+    "What is `NaN` in JavaScript?": "`NaN` stands for 'Not-a-Number', and is returned when a mathematical operation fails or an invalid number is encountered.",
+    "What is the difference between `NaN` and `undefined` in JavaScript?": "`NaN` is a special value indicating an invalid number, while `undefined` means a variable has been declared but not assigned a value.",
+    "What is a promise in JavaScript?": "A promise is an object representing the eventual result of an asynchronous operation. It can be in one of three states: pending, resolved, or rejected.",
+    "What is the `then()` method in JavaScript promises?": "The `then()` method is used to specify what should be done when a promise is resolved or rejected. It takes two callback functions: one for success and one for failure.",
+    "What is the `catch()` method in JavaScript promises?": "The `catch()` method is used to handle promise rejection and can be used to handle errors in asynchronous code.",
+    "What is the `finally()` method in JavaScript promises?": "The `finally()` method is used to execute code once a promise is settled, regardless of whether it was resolved or rejected.",
+    "What is async/await in JavaScript?": "Async/await is a feature in JavaScript that allows you to write asynchronous code in a synchronous manner, making it easier to handle promises.",
+    "What is the `async` keyword in JavaScript?": "The `async` keyword is used to declare a function as asynchronous, meaning it will always return a promise.",
+    "What is the `await` keyword in JavaScript?": "The `await` keyword is used inside an `async` function to pause the execution of the function until the promise resolves or rejects.",
+    "What is the spread operator (`...`) in JavaScript?": "The spread operator (`...`) is used to unpack elements from an array or object, allowing them to be spread into individual elements or properties.",
+    "What is the rest parameter (`...`) in JavaScript?": "The rest parameter (`...`) allows you to represent an indefinite number of arguments as an array, commonly used in function definitions.",
+    "What is a template literal in JavaScript?": "A template literal is a string literal that allows embedding expressions inside `${}` and supports multi-line strings.",
+    "What is destructuring in JavaScript?": "Destructuring is a syntax that allows unpacking values from arrays or properties from objects into distinct variables.",
+    "What is a higher-order function in JavaScript?": "A higher-order function is a function that accepts another function as an argument or returns a function as its result.",
+    "What is a closure in JavaScript?": "A closure is a function that retains access to its lexical scope, even when the function is executed outside that scope.",
+    "What is JavaScript used for?": "JavaScript is used to make web pages interactive. It allows you to add dynamic content like animations, form validation, and interactive maps.",
+    "What is the difference between `let` and `var` in JavaScript?": "`let` is block-scoped, meaning it is only available inside the block of code where it’s defined. `var` is function-scoped, meaning it is available throughout the function it’s declared in.",
+    "What does `const` mean in JavaScript?": "`const` is used to declare variables that cannot be reassigned after their initial value is set. It’s used for constant values.",
+    "What is a JavaScript function?": "A JavaScript function is a block of reusable code that performs a specific task when called or invoked.",
+    "How do you create a simple function in JavaScript?": "To create a function in JavaScript, you can use the `function` keyword followed by a name and a pair of parentheses, like `function myFunction() {}`.",
+    "What is an object in JavaScript?": "An object in JavaScript is a collection of related data and functions. It’s like a container that holds key-value pairs.",
+    "What are arrays in JavaScript?": "Arrays in JavaScript are lists or collections of values. Each value is stored at a specific index, starting from 0.",
+    "What is a JavaScript loop?": "A loop is used to repeat a block of code a certain number of times. The most common loops are `for`, `while`, and `do...while`.",
+    "What is an event in JavaScript?": "An event is something that happens in the browser, like a user clicking a button or submitting a form. JavaScript lets you handle these events.",
+    "How do you add a click event to an element in JavaScript?": "To add a click event to an element, you can use the `addEventListener()` method, like `element.addEventListener('click', myFunction)`.",
+    "What is the `this` keyword in JavaScript?": "`this` refers to the object that is currently being used, such as the object that owns the function.",
+    "How do you change the content of an HTML element using JavaScript?": "You can change the content of an HTML element using `document.getElementById('elementId').innerHTML = 'new content';`.",
+    "What is the purpose of the `alert()` function in JavaScript?": "The `alert()` function shows a pop-up message to the user, often used for simple notifications or debugging.",
+    "What is the difference between `==` and `===` in JavaScript?": "`==` checks if values are equal, while `===` checks if values and their types are equal.",
+    "What is a JavaScript promise?": "A promise is a way to handle asynchronous operations, like fetching data from a server. It has three states: pending, resolved, or rejected.",
+    "What is the `fetch()` function in JavaScript?": "The `fetch()` function is used to make HTTP requests (like getting data from a server). It returns a promise.",
+    "What does `JSON.stringify()` do in JavaScript?": "`JSON.stringify()` converts a JavaScript object into a JSON string, which can be sent to a server or stored.",
+    "What does `JSON.parse()` do in JavaScript?": "`JSON.parse()` converts a JSON string into a JavaScript object, so you can access its data.",
+    "What are template literals in JavaScript?": "Template literals are strings that allow you to embed expressions using `${}`. They can also span multiple lines.",
+    "How do you handle errors in JavaScript?": "You can handle errors using `try...catch`. The `try` block contains the code that might throw an error, and the `catch` block handles it.",
+    "What is a callback function in JavaScript?": "A callback function is a function passed as an argument to another function, which gets executed after the completion of the other function.",
+    "What is an arrow function in JavaScript?": "An arrow function is a shorter way of writing functions in JavaScript, using the `=>` syntax, like `const add = (a, b) => a + b;`.",
+    "What is an immediate invoked function expression (IIFE)?": "An IIFE is a function that runs as soon as it’s defined, commonly used to avoid polluting the global scope.",
+    "What does the `map()` method do in JavaScript?": "The `map()` method creates a new array with the results of calling a provided function on every element in the array.",
+    "What does the `filter()` method do in JavaScript?": "The `filter()` method creates a new array with all elements that pass a test provided by a function.",
+    "What is the `reduce()` method in JavaScript?": "The `reduce()` method applies a function to each element in an array, resulting in a single value, like summing all the numbers in an array.",
+    "What is event delegation in JavaScript?": "Event delegation is a technique where you attach a single event listener to a parent element, and it listens for events on its child elements.",
+    "What is `localStorage` in JavaScript?": "`localStorage` is a web storage feature that allows you to store data on the user's browser. The data persists even after the browser is closed.",
+    "What is `sessionStorage` in JavaScript?": "`sessionStorage` is similar to `localStorage`, but it only stores data for the duration of the page session. Data is cleared when the tab or browser is closed.",
+    "What is the `querySelector()` method in JavaScript?": "The `querySelector()` method is used to find an HTML element by using a CSS selector and returns the first matching element.",
+    "How do you update the style of an HTML element with JavaScript?": "You can update an element's style by using `element.style.property = value`, like `element.style.backgroundColor = 'blue';`.",
+    "What is the purpose of the `setTimeout()` function in JavaScript?": "`setTimeout()` allows you to execute a function after a specific delay, in milliseconds.",
+    "What is the purpose of the `setInterval()` function in JavaScript?": "`setInterval()` repeats a function at specified intervals, in milliseconds, until you stop it.",
+    "What is the difference between `null` and `undefined` in JavaScript?": "`null` is an intentional absence of a value, while `undefined` means a variable has been declared but has not been assigned a value.",
+    "How do you check if a variable is an array in JavaScript?": "You can check if a variable is an array using `Array.isArray(variable)`.",
+    "What is a JavaScript class?": "A class is a blueprint for creating objects with shared properties and methods, introduced in ES6 as a simpler way to create objects.",
+    "What is the `constructor` method in JavaScript classes?": "The `constructor` method is a special method used to initialize an object when it’s created from a class.",
+    "What is the spread operator (`...`) in JavaScript?": "The spread operator is used to unpack values from an array or object. For example, `let arr = [...oldArr]` copies all elements from `oldArr`.",
+    "What is the rest parameter (`...`) in JavaScript?": "The rest parameter allows you to pass a variable number of arguments to a function and collect them into an array.",
+    "What is the difference between `forEach()` and `map()` in JavaScript?": "`forEach()` executes a function for each element in an array but doesn’t return a new array, while `map()` creates and returns a new array with transformed elements.",
+    "What is the purpose of the `in` operator in JavaScript?": "The `in` operator checks if a specified property exists in an object or in an array.",
+    "How do you prevent a form from submitting in JavaScript?": "You can prevent a form from submitting by calling `event.preventDefault()` inside the form's submit event handler.",
+    "What is a promise chain in JavaScript?": "A promise chain is when multiple promises are linked together using the `then()` method, allowing the next promise to execute once the previous one is resolved.",
+    "What is the `bind()` method in JavaScript?": "The `bind()` method creates a new function that, when called, has its `this` keyword set to a specific value.",
+    "What is the `new` keyword used for in JavaScript?": "The `new` keyword is used to create a new instance of an object or class.",
+    "What is the `typeof` operator in JavaScript?": "The `typeof` operator is used to determine the type of a variable or expression, such as `string`, `number`, or `boolean`.",
+    "What is CSS?": "CSS (Cascading Style Sheets) is used to style HTML elements, allowing you to change their appearance, such as their layout, colors, fonts, and spacing.",
+    "What is the difference between `inline` and `block` elements in CSS?": "Block elements take up the full width available and start on a new line, while inline elements only take up as much width as necessary and do not break onto a new line.",
+    "What are CSS selectors?": "CSS selectors are patterns used to select and style HTML elements. Examples include element selectors (e.g., `h1`), class selectors (e.g., `.class-name`), and ID selectors (e.g., `#id-name`).",
+    "What is the purpose of the `class` attribute in CSS?": "The `class` attribute is used to apply the same styles to multiple elements on a page. Multiple elements can share the same class.",
+    "What is the `id` attribute in CSS?": "The `id` attribute is used to apply styles to a unique element. Each `id` should only be used once per page, and it is highly specific.",
+    "What is the `box model` in CSS?": "The CSS box model describes the rectangular boxes generated for elements, consisting of content, padding, border, and margin areas that affect element size and positioning.",
+    "What is the difference between `padding` and `margin` in CSS?": "Padding is the space inside an element, between its content and border. Margin is the space outside the element, creating distance between the element and others.",
+    "What is Flexbox in CSS?": "Flexbox is a CSS layout model that allows elements within a container to be aligned and distributed efficiently, even when their size is unknown or dynamic.",
+    "What is the `display` property in CSS?": "The `display` property defines how an element is displayed on a page. Common values include `block`, `inline`, `inline-block`, `none`, and `flex`.",
+    "What is the `position` property in CSS?": "The `position` property controls how an element is positioned on the page. Values include `static`, `relative`, `absolute`, `fixed`, and `sticky`.",
+    "What is the difference between `absolute` and `relative` positioning in CSS?": "`absolute` positions an element relative to its closest positioned ancestor, while `relative` positions an element relative to its normal position in the document flow.",
+    "What is the purpose of the `z-index` property in CSS?": "The `z-index` property controls the stacking order of elements. Higher `z-index` values are stacked on top of lower ones when elements overlap.",
+    "What is the `float` property in CSS?": "The `float` property is used to position an element to the left or right of its container, allowing text and inline elements to wrap around it.",
+    "What is the `clear` property in CSS?": "The `clear` property is used to prevent elements from floating next to each other, typically used after a floated element to ensure the layout stays correct.",
+    "What is the purpose of the `visibility` property in CSS?": "The `visibility` property controls whether an element is visible or hidden. Unlike `display: none`, the element still takes up space when set to `hidden`.",
+    "What are media queries in CSS?": "Media queries allow you to apply different styles depending on the size of the viewport or the device being used, making websites responsive.",
+    "What is a CSS `transition`?": "A `transition` in CSS is used to animate changes in property values, creating smooth transitions between states (e.g., changing color or size).",
+    "What is a `hover` effect in CSS?": "A `hover` effect in CSS is applied when the user hovers their mouse over an element. It is commonly used to change colors, size, or other visual aspects.",
+    "What is the purpose of the `font-family` property in CSS?": "The `font-family` property is used to specify the font of text within an element. You can provide multiple font names in a list for fallback options.",
+    "What is the `background-color` property in CSS?": "The `background-color` property is used to set the background color of an element. You can use color names, hex values, RGB, or RGBA values.",
+    "What are `px`, `em`, and `rem` in CSS?": "`px` (pixels), `em`, and `rem` are units used to define sizes in CSS. `px` is fixed, while `em` and `rem` are relative units based on font size.",
+    "What is the difference between `em` and `rem` in CSS?": "`em` is relative to the parent element's font size, while `rem` is relative to the root (usually `<html>`) element's font size.",
+    "What is the `border` property in CSS?": "The `border` property is used to define the border around an element. It can include `border-width`, `border-style`, and `border-color`.",
+    "What is the `text-align` property in CSS?": "The `text-align` property is used to set the horizontal alignment of text within an element. Common values include `left`, `center`, and `right`.",
+    "What is the `line-height` property in CSS?": "The `line-height` property controls the amount of space between lines of text. It is commonly used to improve readability.",
+    "What is the `opacity` property in CSS?": "The `opacity` property defines the transparency level of an element, where `1` is fully opaque and `0` is fully transparent.",
+    "What is the purpose of the `box-sizing` property in CSS?": "The `box-sizing` property controls how the width and height of an element are calculated, either including or excluding padding and borders.",
+    "What is the `flex-direction` property in CSS?": "The `flex-direction` property is used in Flexbox to define the direction of flex items within a container. Values include `row`, `column`, `row-reverse`, and `column-reverse`.",
+    "What is the `justify-content` property in CSS?": "The `justify-content` property in Flexbox is used to align items horizontally within a container, with options like `flex-start`, `center`, and `space-between`.",
+    "What is the `align-items` property in CSS?": "The `align-items` property is used in Flexbox to align items vertically along the cross axis, with values like `stretch`, `center`, and `flex-start`.",
+    "What is the `gap` property in CSS?": "The `gap` property is used to set the space between items in a Flexbox or Grid layout, making it easier to add consistent spacing.",
+    "What is a CSS Grid?": "CSS Grid is a two-dimensional layout system that allows you to create complex grid-based designs with rows and columns.",
+    "What is the `grid-template-columns` property in CSS?": "The `grid-template-columns` property in CSS Grid is used to define the number and size of columns in a grid container.",
+    "What is the `grid-template-rows` property in CSS?": "The `grid-template-rows` property is used to define the number and size of rows in a grid container.",
+    "What is `align-self` in CSS?": "`align-self` allows individual flex or grid items to override the `align-items` alignment and be positioned differently along the cross axis.",
+    "What is the `transform` property in CSS?": "The `transform` property allows you to apply transformations to an element, such as scaling, rotating, translating, or skewing.",
+    "What is the `box-shadow` property in CSS?": "The `box-shadow` property adds shadow effects to elements. It can be customized with values like `h-offset`, `v-offset`, `blur`, and `spread`.",
+    "What is the `text-shadow` property in CSS?": "The `text-shadow` property adds shadow effects to text, with values for horizontal and vertical shadow offsets, blur radius, and color.",
+    "What is the `filter` property in CSS?": "The `filter` property applies visual effects like blur, brightness, or grayscale to elements, often used for images and backgrounds.",
+    "What is the purpose of the `overflow` property in CSS?": "The `overflow` property controls how content is displayed when it overflows its container. Values include `visible`, `hidden`, `scroll`, and `auto`.",
+    "What is the `clip-path` property in CSS?": "The `clip-path` property allows you to create shapes by clipping an element to a specific polygon or other geometric shapes.",
+    "What is the `cursor` property in CSS?": "The `cursor` property defines the type of cursor to be displayed when hovering over an element, such as `pointer`, `default`, or `text`.",
+    "What is the purpose of `@media` queries in CSS?": "@media queries allow you to apply different styles based on conditions like screen size, resolution, or device orientation, making your website responsive.",
+    "What is JavaScript?": "JavaScript is a programming language that is primarily used for creating dynamic and interactive content on web pages.",
+    "What are the different types of variables in JavaScript?": "JavaScript has three types of variables: `var`, `let`, and `const`. `var` is function-scoped, while `let` and `const` are block-scoped.",
+    "What is the difference between `null` and `undefined` in JavaScript?": "`null` is an intentional assignment of no value, while `undefined` means a variable has been declared but not yet assigned a value.",
+    "What are JavaScript promises?": "A promise in JavaScript is an object representing the eventual completion or failure of an asynchronous operation.",
+    "What is the difference between `==` and `===` in JavaScript?": "`==` checks for equality of values, but `===` checks for equality of both value and type.",
+    "What is a closure in JavaScript?": "A closure is a function that retains access to its lexical scope, even when the function is executed outside of that scope.",
+    "What is an event in JavaScript?": "An event in JavaScript is an occurrence such as a user clicking a button or typing into an input field, which can be captured and responded to using event listeners.",
+    "What is the DOM in JavaScript?": "The DOM (Document Object Model) represents the HTML structure of a webpage, allowing JavaScript to interact with and modify the content, structure, and style of the page.",
+    "What is the purpose of `localStorage` in JavaScript?": "`localStorage` is used to store data locally within the user's browser, allowing for data persistence even after the page is reloaded or the browser is closed.",
+    "What are arrow functions in JavaScript?": "Arrow functions are a shorthand syntax for writing functions in JavaScript. They are more concise and have lexical scoping for the `this` keyword.",
+    "What is the purpose of `this` in JavaScript?": "`this` refers to the context in which a function is executed and can vary based on how the function is called.",
+    "What is an asynchronous function in JavaScript?": "An asynchronous function allows you to perform tasks like fetching data or processing without blocking the rest of the program.",
+    "What is the `setTimeout()` method in JavaScript?": "`setTimeout()` is a method used to execute a function or expression after a specified delay in milliseconds.",
+    "What is the `setInterval()` method in JavaScript?": "`setInterval()` is used to repeatedly execute a function or expression at specified intervals.",
+    "What is a callback function in JavaScript?": "A callback function is a function that is passed as an argument to another function and is executed after that function completes.",
+    "What is an object in JavaScript?": "An object in JavaScript is a collection of key-value pairs, where each key is a property or method name and the value is its corresponding data or function.",
+    "What is a prototype in JavaScript?": "A prototype is an object that other objects can inherit properties and methods from. Every JavaScript object has a prototype.",
+    "What is the `typeof` operator in JavaScript?": "`typeof` is an operator used to determine the type of a variable or expression (e.g., `string`, `number`, `boolean`).",
+    "What is the `forEach()` method in JavaScript?": "`forEach()` is a method that allows you to execute a provided function once for each element in an array.",
+    "What is the difference between `map()` and `forEach()` in JavaScript?": "`map()` creates a new array with the results of calling a function on every element, while `forEach()` executes a function for each element but does not create a new array.",
+    "What is the `reduce()` method in JavaScript?": "`reduce()` is a method that applies a function to accumulate all elements in an array into a single result.",
+    "What is a template literal in JavaScript?": "Template literals are string literals that allow embedded expressions, denoted by `${}`, and can span multiple lines.",
+    "What is destructuring in JavaScript?": "Destructuring is a syntax that allows you to extract values from arrays or properties from objects and assign them to variables.",
+    "What is an IIFE (Immediately Invoked Function Expression) in JavaScript?": "An IIFE is a function that is defined and immediately executed after its creation.",
+    "What is the difference between `let`, `const`, and `var` in JavaScript?": "`let` and `const` are block-scoped variables, while `var` is function-scoped. `const` is used for constants whose values cannot be reassigned.",
+    "What is the `fetch()` function in JavaScript?": "`fetch()` is used to make network requests to retrieve or send data to a server asynchronously.",
+    "What is an event listener in JavaScript?": "An event listener is a function that waits for a specific event (like a click or keystroke) to occur on a particular element and then responds to it.",
+    "What is `NaN` in JavaScript?": "`NaN` stands for 'Not-a-Number' and is returned when a value that is expected to be a number cannot be converted to a valid number.",
+    "What is a regular expression (RegEx) in JavaScript?": "A regular expression (RegEx) is a sequence of characters that form a search pattern, mainly used for string matching and manipulation.",
+    "What is the purpose of `bind()` in JavaScript?": "`bind()` is a method used to create a new function with a specific `this` value and initial arguments.",
+    "What is the `call()` method in JavaScript?": "`call()` is a method that allows a function to be invoked with a specified `this` value and arguments provided individually.",
+    "What is the `apply()` method in JavaScript?": "`apply()` is similar to `call()`, but it takes arguments as an array or array-like object instead of individually.",
+    "What is the `window` object in JavaScript?": "The `window` object represents the global environment of a web page and contains methods, properties, and events related to the browser window.",
+    "What is event delegation in JavaScript?": "Event delegation is a technique where you assign a single event listener to a parent element instead of individual child elements, and use event propagation to handle events.",
+    "What is the purpose of the `querySelector()` method in JavaScript?": "`querySelector()` is a method used to select an HTML element based on a specified CSS selector, returning the first matching element.",
+    "What is the purpose of the `querySelectorAll()` method in JavaScript?": "`querySelectorAll()` returns a static NodeList containing all elements that match a specified CSS selector.",
+    "What is the `set` data structure in JavaScript?": "A `set` is a collection of unique values. It can store any type of data, but duplicate values are automatically removed.",
+    "What is the `map` data structure in JavaScript?": "A `map` is a collection of key-value pairs, where keys can be any value and values can be any data type.",
+    "What is the `Promise.all()` method in JavaScript?": "`Promise.all()` is a method used to execute multiple promises in parallel and waits for all promises to resolve or one to reject.",
+    "What is `async` and `await` in JavaScript?": "`async` and `await` are used to handle asynchronous operations in a more readable way, where `async` marks a function as asynchronous and `await` pauses execution until the promise is resolved.",
+    "What is the purpose of the `slice()` method in JavaScript?": "`slice()` is a method used to extract a portion of an array or string without modifying the original array or string.",
+    "What is the `splice()` method in JavaScript?": "`splice()` is used to change the content of an array by adding, removing, or replacing elements.",
+    "What is the `find()` method in JavaScript?": "`find()` is a method that returns the first element in an array that satisfies a given testing function.",
+    "What is the `filter()` method in JavaScript?": "`filter()` creates a new array with all elements that pass the test implemented by the provided function.",
+
+
+    // React Questions
+    "What is React?": "React is a JavaScript library for building user interfaces, particularly for single-page applications. It allows developers to build reusable UI components.",
+    "What is JSX?": "JSX is a syntax extension for JavaScript that allows you to write HTML-like code within JavaScript. React uses JSX to define components.",
+    "What is the virtual DOM in React?": "The virtual DOM is an in-memory representation of the real DOM elements. React uses the virtual DOM to optimize updates by making changes in memory first and then applying them to the real DOM.",
+    "What are React components?": "React components are reusable, self-contained building blocks that define how a UI should appear. They can be functional or class-based.",
+    "What are props in React?": "Props (short for properties) are used to pass data from a parent component to a child component in React.",
+    "What is React?": "React is a JavaScript library for building user interfaces. It allows you to create reusable UI components and manage state efficiently.",
+    "What is the difference between React and Angular?": "React is a library focused on building UI components, while Angular is a full-fledged framework with additional tools for routing, state management, and more.",
+    "What is JSX in React?": "JSX (JavaScript XML) is a syntax extension that allows you to write HTML-like code within JavaScript, which React then transforms into JavaScript objects.",
+    "What are components in React?": "Components are the building blocks of a React application. They are reusable pieces of code that define how a part of the UI should appear and behave.",
+    "What is the difference between a functional component and a class component?": "Functional components are simpler and don't require state or lifecycle methods. Class components allow for more complex features, including state management and lifecycle methods.",
+    "What is state in React?": "State is an object that holds the data for a component. It can be changed by user interactions or events, and when the state changes, the component re-renders.",
+    "What is props in React?": "Props are short for 'properties' and are used to pass data from one component to another. They are read-only and cannot be modified by the child component.",
+    "What is a useEffect hook?": "The `useEffect` hook allows you to perform side effects in functional components, such as fetching data or subscribing to events.",
+    "What is the virtual DOM in React?": "The virtual DOM is a lightweight in-memory representation of the actual DOM. React uses it to optimize performance by minimizing direct manipulation of the real DOM.",
+    "What is the purpose of `key` in React?": "`key` is a special prop used to uniquely identify elements in a list, helping React efficiently update and render the correct components.",
+    "What is the purpose of `React.Fragment`?": "`React.Fragment` is used to group multiple components without adding extra nodes to the DOM.",
+    "What are controlled components in React?": "Controlled components are components whose form elements (like inputs and textareas) are controlled by React state rather than by the DOM.",
+    "What are uncontrolled components in React?": "Uncontrolled components are form elements that manage their own state internally, without relying on React state.",
+    "What is a React hook?": "A React hook is a function that lets you 'hook into' React features like state, lifecycle methods, and context in functional components.",
+    "What is the `useState` hook?": "The `useState` hook allows you to add state to functional components, giving you the ability to track values like form inputs, counters, etc.",
+    "What is the `useContext` hook?": "The `useContext` hook allows you to access values from the React Context without manually passing props through each level of the component tree.",
+    "What is React Router?": "React Router is a library that enables navigation in React applications by managing routes and rendering components based on the current URL.",
+    "What is Redux in React?": "Redux is a state management library that helps manage the application state in a predictable way. It stores the state in a global store and allows for consistent updates.",
+    "What is the difference between Redux and React's built-in state?": "Redux is used for global state management across the entire application, while React's built-in state is used for local component state.",
+    "What are higher-order components (HOCs) in React?": "Higher-order components are functions that take a component and return a new component, typically used to add common logic or functionality to components.",
+    "What is a PureComponent in React?": "PureComponent is a type of class component that only re-renders when its props or state change, improving performance by avoiding unnecessary renders.",
+    "What is a component lifecycle in React?": "Component lifecycle refers to the different stages a component goes through, including mounting, updating, and unmounting. These stages have corresponding lifecycle methods.",
+    "What is `componentDidMount` in React?": "`componentDidMount` is a lifecycle method that is called once a component has been rendered and inserted into the DOM. It is often used for data fetching.",
+    "What is `shouldComponentUpdate` in React?": "`shouldComponentUpdate` is a lifecycle method that allows you to optimize performance by preventing unnecessary re-renders.",
+    "What is `componentWillUnmount` in React?": "`componentWillUnmount` is a lifecycle method that is called before a component is removed from the DOM. It is used for cleanup tasks like removing event listeners.",
+    "What is the `useReducer` hook in React?": "The `useReducer` hook is used for more complex state logic in functional components, often as an alternative to `useState` when handling multiple state variables.",
+    "What is React's `context`?": "React's context allows you to share state or data across multiple components without having to pass it down manually through props.",
+    "What is `React.StrictMode`?": "`React.StrictMode` is a wrapper component used to identify potential problems in an application, such as deprecated APIs or unsafe lifecycle methods.",
+    "What is `ReactDOM.render()`?": "`ReactDOM.render()` is a method used to render React components into the DOM. It typically renders the root component of your app.",
+    "What is a `useCallback` hook?": "The `useCallback` hook is used to memoize functions so that they are not redefined on every render, improving performance in certain cases.",
+    "What is the `useMemo` hook in React?": "The `useMemo` hook is used to memoize expensive calculations so that they are only recomputed when necessary, improving performance.",
+    "What is a render prop in React?": "A render prop is a function that a component uses to know how to render its output. It allows for dynamic rendering based on the component's state or props.",
+    "What is `ReactDOM.hydrate()`?": "`ReactDOM.hydrate()` is used to initialize a React app on the client-side after the initial HTML has been rendered on the server.",
+    "What are fragments in React?": "Fragments allow you to group multiple elements without adding extra nodes to the DOM, helping to keep the component's tree clean.",
+    "What is a callback ref in React?": "A callback ref is a function that can be passed to a DOM element or a component in order to access the element directly after it's rendered.",
+    "What is `React.memo()`?": "`React.memo()` is a higher-order component that prevents unnecessary re-renders by memoizing the result of the component and only re-rendering when its props change.",
+    "What are error boundaries in React?": "Error boundaries are components that catch JavaScript errors in their child components, allowing for graceful error handling and preventing the entire app from crashing.",
+    "What is code splitting in React?": "Code splitting is a technique used to break your application into smaller bundles, which can be loaded on demand, improving load time and performance.",
+    "What is the difference between `useEffect` and `componentDidMount`?": "`useEffect` is the functional component version of `componentDidMount` and can also be used for other lifecycle behaviors, such as `componentDidUpdate` and `componentWillUnmount`.",
+    "What is Suspense in React?": "Suspense is a feature in React that allows you to handle asynchronous loading of components, such as fetching data, by showing a loading state until the component is ready.",
+    "What is the difference between state and props in React?": "State is local to a component and can be changed, while props are passed from parent to child components and are read-only.",
+    "What is the purpose of `useLayoutEffect`?": "`useLayoutEffect` is a hook that fires synchronously after all DOM mutations but before the browser has painted, allowing you to read layout and trigger reflows if necessary.",
+    "What is `React.lazy()`?": "`React.lazy()` is a function that allows you to dynamically import components, which is useful for code splitting and loading components only when needed.",
+    "What is `useImperativeHandle` in React?": "`useImperativeHandle` is a hook that allows you to customize the instance value that is exposed when using `ref` in a functional component.",
+    "What are hooks in React?": "Hooks are functions that let you 'hook into' React state, lifecycle methods, and other features in functional components.",
+    "What is `React.PureComponent`?": "`React.PureComponent` is a base class for React components that implements `shouldComponentUpdate` with a shallow prop and state comparison to optimize re-rendering.",
+    "What is React?": "React is a JavaScript library for building interactive user interfaces. It helps developers create reusable UI components for efficient development.",
+    "How does React help in building websites?": "React allows developers to build fast and interactive websites by breaking the UI into reusable components, making the development process easier and more organized.",
+    "What is JSX in React?": "JSX is a special syntax that looks like HTML but is used in JavaScript. It allows you to write HTML elements in JavaScript, which React will then render to the web page.",
+    "What are components in React?": "In React, components are like building blocks of your application. They define the look and behavior of parts of your UI.",
+    "What is a functional component in React?": "A functional component is a simple JavaScript function that takes props and returns JSX, usually used for rendering UI.",
+    "What is a class component in React?": "A class component is a more complex type of React component that allows you to use state and lifecycle methods. It's created using the `class` keyword.",
+    "What is state in React?": "State in React is used to store data that can change over time. When state changes, React will re-render the component to reflect those changes.",
+    "What are props in React?": "Props (short for properties) are used to pass data from one component to another. They allow a parent component to send information to its child components.",
+    "How do you update state in React?": "To update state in React, you use the `setState` method in class components, or the `useState` hook in functional components.",
+    "What is the virtual DOM in React?": "The virtual DOM is an in-memory representation of the real DOM. React uses it to optimize rendering by updating only the necessary parts of the actual DOM.",
+    "What is React Router?": "React Router is a library that helps you navigate between different pages or views in a React application without reloading the whole page.",
+    "What are React Hooks?": "React hooks are functions that allow you to use state and other React features in functional components, such as `useState`, `useEffect`, and `useContext`.",
+    "What is the useEffect hook in React?": "The `useEffect` hook allows you to perform side effects in your components, such as fetching data, setting up subscriptions, or manually changing the DOM.",
+    "What is the `useState` hook in React?": "The `useState` hook lets you add state to functional components. You can track values like user inputs or counters.",
+    "What is the difference between props and state?": "Props are used to pass data from one component to another, while state is used to store and update data within a component.",
+    "What is the purpose of the `key` prop in React?": "The `key` prop helps React identify which items in a list have changed, been added, or removed, allowing React to efficiently update the DOM.",
+    "What is `React.Fragment` used for?": "React.Fragment is used to group multiple components or elements together without adding extra nodes to the DOM, making your code cleaner.",
+    "How do you pass data to a child component in React?": "You can pass data to a child component using props. The parent component sends data, and the child component receives it as props.",
+    "What is `useContext` in React?": "The `useContext` hook allows you to access shared data in your component tree without manually passing props down through each level.",
+    "What is Redux in React?": "Redux is a state management library that helps manage the state of your application in a centralized way, making it easier to share data between components.",
+    "What are higher-order components (HOCs) in React?": "Higher-order components are functions that take a component and return a new component with additional features or behavior, often used for code reuse.",
+    "What is the purpose of `componentDidMount` in React?": "The `componentDidMount` lifecycle method is called after a component is mounted (added to the DOM), often used to fetch data or perform setup tasks.",
+    "What is the `useMemo` hook in React?": "The `useMemo` hook is used to memoize expensive calculations, ensuring that they are only recomputed when their dependencies change, improving performance.",
+    "What is `useCallback` in React?": "The `useCallback` hook is used to memoize functions so they don't get recreated on every render, improving performance in certain scenarios.",
+    "What is the `React.StrictMode` component?": "React.StrictMode is a wrapper component used to detect potential problems in an application, such as unsafe lifecycle methods or deprecated APIs.",
+    "What is `React.lazy` used for?": "`React.lazy` allows you to lazily load components, meaning they are only loaded when needed, improving the initial loading time of your application.",
+    "What is `Suspense` in React?": "Suspense is used with `React.lazy` to display a loading indicator while waiting for a component to be loaded.",
+    "What is `shouldComponentUpdate`?": "`shouldComponentUpdate` is a lifecycle method used in class components to determine whether a component should re-render based on changes in state or props.",
+    "What is a controlled component in React?": "A controlled component is an input element whose value is managed by React state, meaning React is in control of the input's value.",
+    "What is an uncontrolled component in React?": "An uncontrolled component is an input element that manages its own state internally, without relying on React state.",
+    "How do you handle forms in React?": "In React, forms are typically handled by using controlled components, where form elements (inputs, checkboxes) are controlled by React state.",
+    "What is the purpose of `useLayoutEffect` in React?": "`useLayoutEffect` is similar to `useEffect`, but it fires synchronously after all DOM mutations, allowing you to read and modify the DOM before the browser paints.",
+    "What are error boundaries in React?": "Error boundaries are components that catch JavaScript errors in their child components and display a fallback UI instead of crashing the entire application.",
+    "What is `React.memo()`?": "`React.memo()` is a higher-order component that prevents unnecessary re-renders by memoizing the result of a component and only re-rendering when its props change.",
+    "What is the difference between React and Vue?": "React is a library focused on building UI components, while Vue is a full framework with additional tools like routing and state management.",
+    "What is the `componentWillUnmount` lifecycle method?": "`componentWillUnmount` is a lifecycle method in class components that is called just before a component is removed from the DOM, used for cleanup tasks.",
+    "How does React handle events?": "In React, events are handled using camelCase syntax. You define an event handler method and pass it as a prop to the corresponding element (like `onClick`, `onChange`).",
+    "What is the `useImperativeHandle` hook in React?": "The `useImperativeHandle` hook allows you to customize the instance value that is exposed when using `ref` in a functional component.",
+    "What is the `React.createElement` method in React?": "`React.createElement` is used by React internally to create React elements, which are plain JavaScript objects describing the UI. It's also used in JSX behind the scenes.",
+    "What are fragments in React?": "Fragments allow you to group multiple elements without adding extra nodes to the DOM, which helps keep the DOM structure clean.",
+    "What is `React.forwardRef()`?": "`React.forwardRef()` is a function that allows a component to forward its `ref` to a child component, making it easier to access child elements in functional components.",
+    "What are `useReducer` and `useState` in React?": "`useReducer` is an alternative to `useState` for managing more complex state logic, especially when dealing with multiple values or actions in one state object.",
+    "What is the `key` prop used for in lists in React?": "The `key` prop is used to uniquely identify items in a list, helping React optimize updates by knowing which items have changed, added, or removed.",
+
+    // Backend Development (Node.js, Express, REST API)
+    "What is Node.js?": "Node.js is an open-source JavaScript runtime built on Chrome's V8 engine that allows you to run JavaScript code server-side.",
+    "What is Express.js?": "Express.js is a minimal and flexible Node.js web application framework that provides a robust set of features for building web and mobile applications.",
+    "What is middleware in Express.js?": "Middleware is a function that has access to the request object, response object, and the next function in the application’s request-response cycle.",
+    "What is REST API?": "REST (Representational State Transfer) is an architectural style for designing networked applications. REST APIs allow you to interact with resources using standard HTTP methods like GET, POST, PUT, DELETE.",
+    "What is CORS in Node.js?": "CORS (Cross-Origin Resource Sharing) is a mechanism that allows restricted resources on a web server to be requested from another domain outside the domain from which the resource originated.",
+    "What is Node.js?": "Node.js is a runtime environment that allows you to run JavaScript on the server side, enabling you to build fast, scalable network applications.",
+    "Why is Node.js popular for backend development?": "Node.js is popular because it's lightweight, fast, and uses non-blocking, event-driven architecture, making it ideal for handling multiple requests simultaneously.",
+    "What is Express.js?": "Express.js is a minimal and flexible Node.js web application framework that simplifies building APIs and handling HTTP requests in a Node.js environment.",
+    "How do you install Node.js and Express?": "You can install Node.js from the official website. Then, to install Express, run `npm install express` in your project directory.",
+    "What is a REST API?": "A REST API (Representational State Transfer) is an architectural style that defines a set of constraints for creating web services. It uses HTTP methods like GET, POST, PUT, DELETE to interact with resources.",
+    "What is the difference between REST and GraphQL?": "REST is an architectural style for APIs that uses fixed endpoints for each resource, while GraphQL allows clients to request exactly the data they need through a single endpoint.",
+    "How do you create a basic server in Node.js?": "You can create a basic server using the `http` module by writing `const http = require('http');` and `http.createServer((req, res) => { res.end('Hello World'); }).listen(3000);`.",
+    "What is middleware in Express.js?": "Middleware in Express.js is a function that processes incoming requests before they reach the final route handler. It can perform tasks like logging, authentication, and error handling.",
+    "How can I handle routes in Express?": "In Express, you can define routes using methods like `app.get()`, `app.post()`, etc., to specify what should happen when a request is made to a particular URL.",
+    "What is a JSON Web Token (JWT)?": "JWT is an open standard for securely transmitting information between parties as a JSON object. It's often used for authentication in web applications.",
+    "What is CORS (Cross-Origin Resource Sharing)?": "CORS is a mechanism that allows web applications running at one origin to make requests for resources from a different origin, controlling which domains are permitted.",
+    "How do you connect a Node.js app to a database?": "You can use libraries like `mongoose` (for MongoDB) or `pg` (for PostgreSQL) to connect a Node.js application to a database.",
+    "What is the purpose of the `res.send()` method in Express?": "The `res.send()` method is used to send the response to the client, usually in the form of text, HTML, or JSON.",
+    "What is the difference between `app.get()` and `app.post()` in Express?": "`app.get()` is used to handle GET requests, while `app.post()` is used to handle POST requests in Express.",
+    "How can I handle errors in Express?": "You can handle errors in Express by using an error-handling middleware, which takes four parameters: `err, req, res, next`.",
+    "How do I send JSON data in a response using Express?": "To send JSON data, use `res.json(data)` where `data` is the object or array you want to send.",
+    "What are environment variables in Node.js?": "Environment variables are used to store configuration settings outside of your code, such as database URLs or API keys. You can access them using `process.env.VARIABLE_NAME`.",
+    "What is the purpose of `app.use()` in Express?": "`app.use()` is used to mount middleware functions in Express, which process the request before it reaches the route handlers.",
+    "What is a `GET` request in REST API?": "A `GET` request is used to retrieve data from a server. It's a read-only operation that doesn't modify any data on the server.",
+    "What is a `POST` request in REST API?": "A `POST` request is used to send data to a server to create a new resource. It's often used for submitting forms or creating new records.",
+    "What is a `PUT` request in REST API?": "A `PUT` request is used to update a resource on the server. It replaces the entire resource with the new data provided.",
+    "What is a `DELETE` request in REST API?": "A `DELETE` request is used to remove a resource from the server.",
+    "How do you handle asynchronous code in Node.js?": "In Node.js, you handle asynchronous code using callbacks, promises, or async/await.",
+    "What is the difference between `async` and `await` in JavaScript?": "`async` is used to define a function that returns a promise, while `await` is used to wait for the promise to resolve inside an `async` function.",
+    "How do you secure your Express.js API?": "You can secure your Express.js API by using authentication (like JWT or OAuth), validating user inputs, and protecting routes with middleware.",
+    "What is the purpose of `next()` in Express?": "The `next()` function is used to pass control to the next middleware function in the stack. If it's not called, the request will hang and never reach the route handler.",
+    "What is the purpose of `res.status()` in Express?": "`res.status()` is used to set the HTTP status code of the response, indicating whether the request was successful or if there was an error.",
+    "What is a RESTful route?": "A RESTful route follows REST principles, meaning the URL structure and HTTP methods represent actions on resources (like `/users` for GET or POST requests).",
+    "What is `req.body` in Express?": "`req.body` contains the data sent by the client in a POST or PUT request. It's used to access form data or JSON payload.",
+    "What is the role of `req.params` in Express?": "`req.params` contains the route parameters, which are dynamic values defined in the route path (like `:id`).",
+    "What is a Node.js event loop?": "The event loop is a mechanism in Node.js that handles asynchronous operations like reading files, making API calls, etc., allowing the application to be non-blocking.",
+    "What is `mongoose`?": "`Mongoose` is an ODM (Object Data Modeling) library for MongoDB, used to define schemas and interact with MongoDB databases in a more structured way.",
+    "How do you implement authentication in Express?": "You can implement authentication in Express using middleware like Passport.js or by creating your own authentication system with JWT or sessions.",
+    "What is the purpose of the `app.listen()` method in Express?": "`app.listen()` is used to make the Express app listen for incoming requests on a specified port, allowing your server to handle requests.",
+    "How do you make a POST request in a REST API?": "To make a POST request, use the `app.post()` method in Express to handle incoming data and send a response.",
+    "What are HTTP status codes?": "HTTP status codes indicate the outcome of an HTTP request. For example, `200` means success, `404` means not found, and `500` means server error.",
+    "What is `npm`?": "`npm` (Node Package Manager) is a package manager for JavaScript. It helps you install, share, and manage packages in Node.js applications.",
+    "How can you use `nodemon` in Node.js?": "`nodemon` is a tool that automatically restarts your server when file changes are detected, making it easier to develop and test your application.",
+    "What is `app.post()` used for in Express?": "`app.post()` is used to handle POST requests, typically used when sending data to the server to create or update a resource.",
+    "How do you handle multiple routes in Express?": "You can handle multiple routes in Express by defining them using methods like `app.get()`, `app.post()`, `app.put()`, and `app.delete()` for each route.",
+    "What is the purpose of `res.sendFile()` in Express?": "`res.sendFile()` is used to send a file as a response to the client. It's commonly used for sending static assets like images or HTML files.",
+    "What is the difference between `req.query` and `req.params` in Express?": "`req.query` contains query parameters in the URL (like `?id=1`), while `req.params` contains route parameters defined in the URL path (like `:id`).",
+    "What is the `cors` package in Express?": "`cors` is a middleware that allows you to enable Cross-Origin Resource Sharing in your API, which is useful when your API and frontend are hosted on different domains.",
+    "How do you handle file uploads in Node.js?": "You can handle file uploads in Node.js using middleware like `multer`, which processes `multipart/form-data` requests to upload files.",
+    "What is the `router` in Express?": "A `router` in Express is an isolated instance of middleware and routes, allowing you to handle specific groups of routes separately from the main app.",
+
+    // Databases (SQL, NoSQL, MongoDB, MySQL)
+    "What is SQL?": "SQL (Structured Query Language) is a standard language for managing and manipulating relational databases.",
+    "What is a JOIN in SQL?": "A JOIN operation in SQL combines rows from two or more tables based on a related column between them.",
+    "What is the difference between `INNER JOIN` and `LEFT JOIN` in SQL?": "`INNER JOIN` returns records that have matching values in both tables, while `LEFT JOIN` returns all records from the left table and matching records from the right table.",
+    "What is normalization in databases?": "Normalization is the process of organizing a relational database to minimize redundancy and dependency by dividing large tables into smaller ones.",
+    "What is NoSQL?": "NoSQL databases are non-relational databases that store data in formats like key-value pairs, documents, or graphs. Examples include MongoDB and Cassandra.",
+    
+    // Git and Version Control Questions
+    "What is Git?": "Git is a distributed version control system that helps track changes in source code during software development.",
+    "What is the difference between `git pull` and `git fetch`?": "`git pull` updates your local repository with changes from the remote repository and merges them, while `git fetch` only downloads the changes without merging.",
+    "What is a Git branch?": "A Git branch allows you to diverge from the main line of development and work on a feature or fix without affecting the main codebase.",
+    "What is a merge conflict in Git?": "A merge conflict occurs when two branches have conflicting changes in the same part of a file, and Git cannot automatically merge them.",
+    "What is `git rebase`?": "`git rebase` is a Git command that integrates changes from one branch into another. Unlike `git merge`, it rewrites the commit history to create a linear progression.",
+    
+    // Deployment and DevOps Questions
+    "What is Docker?": "Docker is an open-source platform used to automate the deployment, scaling, and management of applications inside containers.",
+    "What is Kubernetes?": "Kubernetes is an open-source platform designed to automate deploying, scaling, and managing containerized applications.",
+    "What is Continuous Integration (CI)?": "Continuous Integration is a software development practice where code changes are automatically tested and integrated into a shared repository multiple times a day.",
+    "What is Continuous Delivery (CD)?": "Continuous Delivery is the practice of automatically deploying code changes to a production environment after passing tests.",
+    "What is the purpose of environment variables in deployment?": "Environment variables are used to store configuration data, such as API keys and database credentials, in a secure way, separating them from the source code.",
+    
+    // Other Full Stack Development Questions
+    "What is Webpack?": "Webpack is a static module bundler for modern JavaScript applications. It bundles JavaScript files and other assets for the browser.",
+    "What is an API Gateway?": "An API Gateway is a server that acts as an API front-end, receiving API requests, passing them to the back-end services, and then returning the appropriate responses.",
+    "What is GraphQL?": "GraphQL is a query language for APIs and a runtime for executing those queries with your existing data.",
+    "What is Authentication?": "Authentication is the process of verifying the identity of a user or system, usually by requiring a username and password.",
+    "What is Authorization?": "Authorization is the process of determining what actions an authenticated user or system is allowed to perform."
+    
+     };
+
+        function appendMessage(content, sender) {
+            const messageDiv = document.createElement("div");
+            messageDiv.classList.add("message", sender);
+            messageDiv.textContent = content;
+            messagesDiv.appendChild(messageDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        // Normalize input and handle fuzzy matching
+        function searchResponse(query) {
+            const normalizedQuery = query.toLowerCase().trim(); // Normalize the input
+            let bestMatch = null;
+            let bestScore = 0;
+
+            // Iterate over stored data and calculate fuzzy score
+            for (let key in fullStackData) {
+                const normalizedKey = key.toLowerCase();
+                const score = getFuzzyMatchScore(normalizedQuery, normalizedKey);
+                
+                // Keep track of the best match
+                if (score > bestScore) {
+                    bestScore = score;
+                    bestMatch = fullStackData[key];
+                }
+            }
+
+            // If no match found, suggest alternatives
+            if (bestScore < 0.5) {
+                return "Sorry, I couldn't find an answer for that. Can you rephrase your question?";
+            }
+
+            return bestMatch;
+        }
+
+        // Simple fuzzy matching using Levenshtein distance
+        function getFuzzyMatchScore(query, key) {
+            let distance = getLevenshteinDistance(query, key);
+            let maxLength = Math.max(query.length, key.length);
+            return (maxLength - distance) / maxLength;
+        }
+
+        // Calculate Levenshtein distance (edit distance)
+        function getLevenshteinDistance(a, b) {
+            const tmp = [];
+            for (let i = 0; i <= a.length; i++) {
+                tmp[i] = [i];
+            }
+            for (let j = 0; j <= b.length; j++) {
+                tmp[0][j] = j;
+            }
+            for (let i = 1; i <= a.length; i++) {
+                for (let j = 1; j <= b.length; j++) {
+                    tmp[i][j] = Math.min(
+                        tmp[i - 1][j] + 1,
+                        tmp[i][j - 1] + 1,
+                        tmp[i - 1][j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1)
+                    );
+                }
+            }
+            return tmp[a.length][b.length];
+        }
+
+        // Function to send message and get a response
+        function sendMessage() {
+            const message = userInput.value.trim();
+            if (!message) return;
+
+            appendMessage(message, "user");
+            userInput.value = "";
+
+            // Get the response based on the user's input
+            const response = searchResponse(message);
+
+            appendMessage(response, "bot");
+        }
+
+        // Send message when user presses Enter
+        userInput.addEventListener("keypress", function (e) {
+            if (e.key === "Enter") {
+                sendMessage();
+            }
+        });
+    </script>
+</body>
+</html>
